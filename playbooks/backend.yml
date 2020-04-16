@@ -1,0 +1,24 @@
+---
+- hosts:
+    - virtualbox-backend
+    - prod-backend
+  become: yes
+  become_user: root
+  environment:
+    http_proxy: "{{ http_proxy | default() }}"
+    https_proxy: "{{ https_proxy | default() }}"
+    no_proxy: "{{ no_proxy | default() }}"
+  pre_tasks:
+    - debug: var=hostvars[inventory_hostname]
+  roles:
+    - name: trombik.hostname
+    - name: trombik.localtime
+    - name: trombik.hosts
+    - name: trombik.freebsd_pkg_repo
+      when: ansible_os_family == 'FreeBSD'
+    - name: trombik.vim
+    - name: trombik.zsh
+    - name: trombik.git
+    - name: users
+    - name: trombik.sensu_go_backend
+    - name: trombik.sensu_go_agent

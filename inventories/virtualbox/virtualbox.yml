@@ -1,0 +1,34 @@
+---
+all:
+  hosts:
+    nex2.i.trombik.org:
+      vagrant_priority: 20
+      ansible_host: 172.16.100.254
+      vagrant_box: trombik/ansible-freebsd-12.1-amd64
+      ansible_python_interpreter: /usr/local/bin/python
+    target1.i.trombik.org:
+      vagrant_priority: 20
+      ansible_host: 172.16.100.101
+      vagrant_box: trombik/ansible-freebsd-12.1-amd64
+      ansible_python_interpreter: /usr/local/bin/python
+  children:
+    backend:
+      hosts:
+        nex2.i.trombik.org:
+    target:
+      hosts:
+        target1.i.trombik.org:
+    virtualbox-backend:
+      children:
+        backend:
+    virtualbox-target:
+      children:
+        target:
+    virtualbox-credentials:
+      children:
+        backend:
+        target:
+    virtualbox:
+      children:
+        backend:
+        target:

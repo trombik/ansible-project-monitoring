@@ -1,0 +1,7 @@
+---
+
+- name: Import backend.yml
+  import_playbook: backend.yml
+
+- name: Import target.yml
+  import_playbook: target.yml

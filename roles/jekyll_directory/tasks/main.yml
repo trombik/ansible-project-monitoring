@@ -1,0 +1,9 @@
+---
+
+- name: Create a directory for jekyll sites
+  file:
+    path: /var/www/htdocs/sites
+    state: directory
+    owner: trombik
+    group: www
+    mode: '0755'

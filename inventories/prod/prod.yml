@@ -1,0 +1,21 @@
+---
+all:
+  hosts:
+    nex1.i.trombik.org:
+      ansible_host: nex1.i.trombik.org
+      ansible_python_interpreter: /usr/local/bin/python3
+      vars:
+        ansible_python_interpreter: /usr/local/bin/python3
+  children:
+    www:
+      hosts:
+        nex1.i.trombik.org:
+    prod-www:
+      children:
+        www:
+    prod-credentials:
+      children:
+       www :
+    prod:
+      children:
+        www:

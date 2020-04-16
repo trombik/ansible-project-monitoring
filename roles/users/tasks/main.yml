@@ -1,0 +1,18 @@
+---
+
+- name: Create trombik user
+  user:
+    comment: Tomoyuki Sakurai
+    create_home: yes
+    group: wheel
+    groups:
+      - dialer
+    name: trombik
+    password: "{{ project_trombik_password }}"
+    shell: /usr/local/bin/zsh
+
+- name: Create trombik's ssh key
+  authorized_key:
+    key: https://github.com/trombik.keys
+    comment: y@trombik.org
+    user: trombik
