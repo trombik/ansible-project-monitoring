@@ -1,0 +1,45 @@
+---
+# tasks file for ansible-role-sensu_go_backend
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create sensu_go_backend_log_dir directory
+  file:
+    path: "{{ sensu_go_backend_log_dir }}"
+    mode: 0755
+    owner: "{{ sensu_go_backend_user }}"
+    group: "{{ sensu_go_backend_group }}"
+    state: directory
+  notify: Restart sensu_go_backend
+
+- name: Create sensu_go_backend_state_dir directory
+  file:
+    path: "{{ sensu_go_backend_state_dir }}"
+    mode: 0755
+    owner: "{{ sensu_go_backend_user }}"
+    group: "{{ sensu_go_backend_group }}"
+    state: directory
+  notify: Restart sensu_go_backend
+
+- name: Create sensu_go_backend_cache_dir directory
+  file:
+    path: "{{ sensu_go_backend_cache_dir }}"
+    mode: 0755
+    owner: "{{ sensu_go_backend_user }}"
+    group: "{{ sensu_go_backend_group }}"
+    state: directory
+  notify: Restart sensu_go_backend
+
+- name: Create sensu_go_backend_conf_file
+  template:
+    src: sensu-backend.yml.j2
+    dest: "{{ sensu_go_backend_conf_file }}"
+    # validate: echo %s
+  notify: Restart sensu_go_backend
+
+- name: Start sensu_go_backend
+  service:
+    name: "{{ sensu_go_backend_service }}"
+    state: started

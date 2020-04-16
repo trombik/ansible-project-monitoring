@@ -1,0 +1,10 @@
+---
+__sensu_go_backend_user: sensu
+__sensu_go_backend_group: sensu
+__sensu_go_backend_package: sysutils/sensu-go-backend
+__sensu_go_backend_extra_packages: []
+__sensu_go_backend_state_dir: /var/db/sensu/sensu-backend
+__sensu_go_backend_cache_dir: /var/cache/sensu/sensu-backend
+__sensu_go_backend_service: sensu-backend
+__sensu_go_backend_conf_dir: /usr/local/etc
+__sensu_go_backend_conf_file: "{{ __sensu_go_backend_conf_dir }}/sensu-backend.yml"

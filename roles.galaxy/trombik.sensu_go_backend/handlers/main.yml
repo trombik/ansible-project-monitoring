@@ -1,0 +1,13 @@
+---
+
+- name: Restart sensu_go_backend
+  service:
+    name: "{{ sensu_go_backend_service }}"
+    state: restarted
+
+- name: Configure initial admin account
+  command:
+    cmd: sensu-backend init
+  environment:
+    SENSU_BACKEND_CLUSTER_ADMIN_USERNAME: "{{ sensu_go_backend_admin_account }}"
+    SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD: "{{ sensu_go_backend_admin_password }}"
