@@ -12,6 +12,15 @@ operations, such as deploying and testing. Available targets can be shown by:
 > bundle exec rake -T
 ```
 
+## Requirements
+
+* nodejs and npm
+* ruby
+* bundler
+* Virtualbox
+* Vagrant
+* [ChromeDriver](https://chromedriver.chromium.org/getting-started)
+
 ## Environments
 
 The project has two environments. To choose environment, set
