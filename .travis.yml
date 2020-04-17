@@ -9,11 +9,13 @@ sudo: false
 bundler_args: --binstubs --with development
 
 before_install:
-  - npm install
-  - pip install yamllint
 
   # Use bundler 2.x
   - gem install bundler
+
+install:
+  - npm install
+  - pip install yamllint
 
 scripts:
   - rake test:rubocop:all
