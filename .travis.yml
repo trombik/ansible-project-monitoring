@@ -15,7 +15,11 @@ before_install:
 
 install:
   - npm install
-  - pip3 install yamllint
+
+  # XXX without this, pip3 fails with
+  # `The `pip3' command exists in these Python versions:`
+  - pyenv global 3.7
+  - pip3 install --user yamllint
 
 scripts:
   - rake test:rubocop:all
