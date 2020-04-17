@@ -1,0 +1,16 @@
+---
+language: ruby
+rvm:
+  - 2.6
+cache: bundler
+bundler_args: --binstubs
+
+before_install:
+  - npm install
+
+  # Use bundler 2.x
+  - gem install bundler
+
+scripts:
+  - rake test:rubocop:all
+  - node node_modules/markdownlint-cli/markdownlint.js .
