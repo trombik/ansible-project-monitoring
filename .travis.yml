@@ -3,7 +3,7 @@ language: ruby
 rvm:
   - 2.6
 cache: bundler
-bundler_args: --binstubs
+bundler_args: --binstubs --with development
 
 before_install:
   - npm install
