@@ -8,6 +8,7 @@ cache: bundler
 sudo: false
 
 before_install:
+  - pyenv global 3.7
 
   # Use bundler 2.x
   - gem install bundler
@@ -17,8 +18,7 @@ install:
 
   # XXX without this, pip3 fails with
   # `The `pip3' command exists in these Python versions:`
-  - pyenv global 3.7
-  - pip3 install --user yamllint
+  - pip3 install --user yamllint ansible
   - bundle install --path=vendor/bundle --with development
 
 scripts:
