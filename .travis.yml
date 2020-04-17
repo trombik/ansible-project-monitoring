@@ -6,7 +6,6 @@ cache: bundler
 
 # Use the new container infrastructure
 sudo: false
-bundler_args: --binstubs --with development
 
 before_install:
 
@@ -20,6 +19,7 @@ install:
   # `The `pip3' command exists in these Python versions:`
   - pyenv global 3.7
   - pip3 install --user yamllint
+  - bundle install --path=vendor/bundle --with development --binstubs
 
 scripts:
   - rake test:rubocop:all
