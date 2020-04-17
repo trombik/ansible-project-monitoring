@@ -9,12 +9,18 @@ shared_examples "a host with all basic tools installed" do
   tools.each do |p|
     if p.key?(:name)
       describe package(p[:name]) do
-        it { should be_installed }
+        it do
+          pending "package is not yet available in the repository" if p[:name] == "tmux"
+          should be_installed
+        end
       end
     end
 
     describe command("#{p[:cmd]} #{p[:opts]}") do
-      its(:exit_status) { should eq 0 }
+      its(:exit_status) do
+        pending "package is not yet available in the repository" if p[:cmd] == "tmux"
+        should eq 0
+      end
     end
   end
 end
