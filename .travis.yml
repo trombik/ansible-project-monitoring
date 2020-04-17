@@ -15,7 +15,7 @@ before_install:
 
 install:
   - npm install
-  - pip install yamllint
+  - pip3 install yamllint
 
 scripts:
   - rake test:rubocop:all
