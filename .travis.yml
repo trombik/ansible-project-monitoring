@@ -19,9 +19,9 @@ install:
   # `The `pip3' command exists in these Python versions:`
   - pyenv global 3.7
   - pip3 install --user yamllint
-  - bundle install --path=vendor/bundle --with development --binstubs
+  - bundle install --path=vendor/bundle --with development
 
 scripts:
-  - rake test:rubocop:all
+  - bundle exec rake test:rubocop:all
   - node node_modules/markdownlint-cli/markdownlint.js .
   - yamllint -c .yamllint.yml .
