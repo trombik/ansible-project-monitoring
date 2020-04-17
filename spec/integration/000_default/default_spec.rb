@@ -12,7 +12,7 @@ case test_environment
 when "virtualbox"
   feature "Login to sensu-backend" do
     scenario "with vaild credential" do
-      sign_up_with "admin" , "P@ssw0rd!"
+      sign_up_with "admin", "P@ssw0rd!"
 
       expect(page).to have_content("Last executed")
     end
