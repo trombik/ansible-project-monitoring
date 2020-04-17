@@ -15,10 +15,11 @@ operations, such as deploying and testing. Available targets can be shown by:
 ## Requirements
 
 * nodejs and npm
-* ruby
+* ruby 2.6.x
 * bundler
 * Virtualbox
 * Vagrant
+* python 3
 * [ChromeDriver](https://chromedriver.chromium.org/getting-started)
 
 ## Environments

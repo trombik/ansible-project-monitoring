@@ -15,7 +15,7 @@ all:
         www:
     prod-credentials:
       children:
-       www :
+        www:
     prod:
       children:
         www:
