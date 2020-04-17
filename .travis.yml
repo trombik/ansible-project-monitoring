@@ -24,4 +24,4 @@ install:
 scripts:
   - rake test:rubocop:all
   - node node_modules/markdownlint-cli/markdownlint.js .
-  - yamllint -c .yamllint.yml
+  - yamllint -c .yamllint.yml .
