@@ -1,0 +1,11 @@
+---
+os: unknown
+dist: unknown
+
+channel: stable
+version: latest
+build: latest
+components:
+  - sensu-go-backend
+  - sensu-go-agent
+  - sensu-go-cli

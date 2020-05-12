@@ -1,6 +1,8 @@
 ---
-
-- name: trombik.freebsd_pkg_repo
-- name: trombik.apt_repo
-- name: trombik.redhat_repo
-- name: trombik.sensu_go_agent
+roles:
+  - name: trombik.freebsd_pkg_repo
+  - name: trombik.apt_repo
+  - name: trombik.redhat_repo
+  - name: trombik.sensu_go_agent
+collections:
+  - name: sensu.sensu_go

@@ -4,6 +4,23 @@
 
 `ansible` role for `sensu-go` version of `sensu-backend`.
 
+## Notes for users
+
+This role uses [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). The collection must be
+installed by `ansible-galaxy`.
+
+```yaml
+---
+# requirements.yml
+
+collections:
+  - name: sensu.sensu_go
+```
+
+```console
+> ansible-galaxy collection install -r requirements.yml -p collections
+```
+
 ## Notes for FreeBSD users
 
 As of this writing (2020/04/16), the official FreeBSD ports tree does not have
@@ -35,11 +52,31 @@ None
 | `sensu_go_backend_flags` | see below | `""` |
 | `sensu_go_backend_admin_account` | name of admin account | `""` |
 | `sensu_go_backend_admin_password` | password of admin account | `""` |
+| `sensu_go_backend_flush_handlers` | if true, run `meta` `ansible` action during the play | `true` |
+| `sensu_go_backend_assets` | list of `sensu-go` `asset` (see below) | `[]` |
+| `sensu_go_backend_checks` | list of `sense-go` `check` (see below) | `[]` |
 
 ## `sensu_go_backend_flags`
 
 This variable is used to configure startup options for the service. What it
 does depends on platform.
+
+## `sensu_go_backend_assets`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `asset` | a dict of arguments passed to `asset` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_checks`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `check` | a dict of arguments passed to `check` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
 
 ### FreeBSD
 
@@ -97,7 +134,7 @@ does depends on platform.
 
 # Dependencies
 
-None
+[`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/)
 
 # Example Playbook
 
@@ -111,22 +148,17 @@ None
       when: ansible_os_family == 'Debian'
     - role: trombik.redhat_repo
       when: ansible_os_family == 'RedHat'
-    - role: ansible-role-sensu_go_backend
 
-    # XXX sensu_go_agent must run *after* sensu_go_backend
-    # because the FreeBSD port installs agent and backend, the handler to
-    # configure admin account and password does not run if your run
-    # sensu_go_agent before sensu_go_backend. to fix this, the port must be
-    # fixed so that you can install them from different packages. this does
-    # not happen on other platform where backend and agent have their own
-    # package.
     - role: trombik.sensu_go_agent
+    - role: ansible-role-sensu_go_backend
   vars:
 
     # __________________________________________agent
     sensu_go_agent_config:
       backend-url: ws://localhost:8081
       cache-dir: "{{ sensu_go_agent_cache_dir }}"
+      subscriptions:
+        - system
 
     os_sensu_go_agent_flags:
       FreeBSD: ""
@@ -135,6 +167,11 @@ None
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    os_sensu_go_backend_extra_packages:
+      FreeBSD: sysutils/sensu-go-cli
+      Debian: sensu-go-cli
+      RedHat: sensu-go-cli
+    sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
     sensu_go_backend_admin_account: admin
     sensu_go_backend_admin_password: P@ssw0rd!
     sensu_go_backend_config:
@@ -151,6 +188,30 @@ None
       Debian: ""
       RedHat: ""
     sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
+    sensu_go_backend_checks:
+      - check:
+          name: check
+          command: sensu-go-uptime-check -w 72h -c 168h
+          subscriptions:
+            - system
+          interval: 60
+          publish: yes
+          runtime_assets:
+            - sensu-go-uptime-check
+    sensu_go_backend_assets:
+      - asset:
+          name: sensu-go-uptime-check
+          auth:
+            user: "{{ sensu_go_backend_admin_account }}"
+            password: "{{ sensu_go_backend_admin_password }}"
+          builds:
+            - sha512: 30d7ac78e314e83558891b6115b18d7f89d129f9d7e163af254e8f8e3a45f7b51efe648c45c827426b8be273974c3f63b934afb946a989cbdf11e5f576537b2b
+              filters:
+                - entity.system.os == 'freebsd'
+                - entity.system.arch == 'amd64'
+              url: https://github.com/asachs01/sensu-go-uptime-check/releases/download/1.0.2/sensu-go-uptime-check_1.0.2_freebsd_amd64.tar.gz
+
+    # __________________________________________package
     freebsd_pkg_repo:
 
       # disable the default package repository
@@ -163,7 +224,7 @@ None
       FreeBSD_devel:
         enabled: "true"
         state: present
-        url: "http://pkg.i.trombik.org/{{ ansible_distribution_version | regex_replace('\\.', '') }}{{ansible_architecture}}-master-default/"
+        url: "http://pkg.i.trombik.org/{{ ansible_distribution_version | regex_replace('\\.', '') }}{{ansible_architecture}}-default-default/"
         mirror_type: http
         signature_type: none
         priority: 100

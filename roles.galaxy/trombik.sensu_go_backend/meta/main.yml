@@ -5,7 +5,7 @@ galaxy_info:
   description: Manage sensu-go backend
   company: N/A
   license: BSD
-  min_ansible_version: 2.0
+  min_ansible_version: 2.9
   platforms:
     - name: FreeBSD
       versions:

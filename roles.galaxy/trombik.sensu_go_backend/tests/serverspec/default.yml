@@ -8,13 +8,6 @@
     - role: trombik.redhat_repo
       when: ansible_os_family == 'RedHat'
 
-    # XXX sensu_go_agent must run *after* sensu_go_backend
-    # because the FreeBSD port installs agent and backend, the handler to
-    # configure admin account and password does not run if your run
-    # sensu_go_agent before sensu_go_backend. to fix this, the port must be
-    # fixed so that you can install them from different packages. this does
-    # not happen on other platform where backend and agent have their own
-    # package.
     - role: trombik.sensu_go_agent
     - role: ansible-role-sensu_go_backend
   vars:
@@ -23,6 +16,8 @@
     sensu_go_agent_config:
       backend-url: ws://localhost:8081
       cache-dir: "{{ sensu_go_agent_cache_dir }}"
+      subscriptions:
+        - system
 
     os_sensu_go_agent_flags:
       FreeBSD: ""
@@ -52,6 +47,30 @@
       Debian: ""
       RedHat: ""
     sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
+    sensu_go_backend_checks:
+      - check:
+          name: check
+          command: sensu-go-uptime-check -w 72h -c 168h
+          subscriptions:
+            - system
+          interval: 60
+          publish: yes
+          runtime_assets:
+            - sensu-go-uptime-check
+    sensu_go_backend_assets:
+      - asset:
+          name: sensu-go-uptime-check
+          auth:
+            user: "{{ sensu_go_backend_admin_account }}"
+            password: "{{ sensu_go_backend_admin_password }}"
+          builds:
+            - sha512: 30d7ac78e314e83558891b6115b18d7f89d129f9d7e163af254e8f8e3a45f7b51efe648c45c827426b8be273974c3f63b934afb946a989cbdf11e5f576537b2b
+              filters:
+                - entity.system.os == 'freebsd'
+                - entity.system.arch == 'amd64'
+              url: https://github.com/asachs01/sensu-go-uptime-check/releases/download/1.0.2/sensu-go-uptime-check_1.0.2_freebsd_amd64.tar.gz
+
+    # __________________________________________package
     freebsd_pkg_repo:
 
       # disable the default package repository

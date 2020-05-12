@@ -13,3 +13,6 @@ sensu_go_backend_config: ""
 sensu_go_backend_flags: ""
 sensu_go_backend_admin_account: ""
 sensu_go_backend_admin_password: ""
+sensu_go_backend_flush_handlers: yes
+sensu_go_backend_assets: []
+sensu_go_backend_checks: []
