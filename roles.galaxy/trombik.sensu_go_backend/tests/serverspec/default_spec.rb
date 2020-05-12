@@ -119,3 +119,23 @@ describe command("sensuctl configure -n --url http://127.0.0.1:8080 --username #
   its(:stderr) { should match(/Using Basic Auth in HTTP mode is not secure, use HTTPS/) }
   its(:stdout) { should eq "" }
 end
+
+describe command "sensuctl asset list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "sensu-go-uptime-check"))) }
+end
+
+describe command "sensuctl check list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("command" => "sensu-go-uptime-check -w 72h -c 168h")) }
+end
+
+describe command "sensuctl entity list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("entity_class" => "agent")) }
+  its(:stdout_as_json) { should include(include("system" => include("platform" => os[:family] == "redhat" ? "centos" : os[:family]))) }
+  its(:stdout_as_json) { should include(include("subscriptions" => include("system"))) }
+end

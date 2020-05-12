@@ -43,3 +43,49 @@
   service:
     name: "{{ sensu_go_backend_service }}"
     state: started
+
+- name: Include flush_handlers.yml
+  # XXX workaround `[WARNING]: flush_handlers task does not support when
+  # conditional`
+  # https://github.com/ansible/ansible/issues/41313
+  include_tasks: flush_handlers.yml
+  when:
+    - sensu_go_backend_flush_handlers
+
+- name: Configure sensu_go_backend_assets
+  sensu.sensu_go.asset:
+    annotations: "{{ item['asset']['annotations'] | default(omit) }}"
+    auth: "{{ item['asset']['auth'] | default(omit) }}"
+    builds: "{{ item['asset']['builds'] | default(omit) }}"
+    labels: "{{ item['asset']['labels'] | default(omit) }}"
+    name: "{{ item['asset']['name'] }}"
+    namespace: "{{ item['asset']['namespace'] | default(omit) }}"
+    state: "{{ item['asset']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_assets }}"
+
+- name: Configure sensu_go_backend_checks
+  sensu.sensu_go.check:
+    annotations: "{{ item['check']['annotations'] | default(omit) }}"
+    auth: "{{ item['check']['auth'] | default(omit) }}"
+    check_hooks: "{{ item['check']['check_hooks'] | default(omit) }}"
+    command: "{{ item['check']['command'] | default(omit) }}"
+    cron: "{{ item['check']['cron'] | default(omit) }}"
+    env_vars: "{{ item['check']['env_vars'] | default(omit) }}"
+    handlers: "{{ item['check']['handlers'] | default(omit) }}"
+    high_flap_threshold: "{{ item['check']['high_flap_threshold'] | default(omit) }}"
+    interval: "{{ item['check']['interval'] | default(omit) }}"
+    labels: "{{ item['check']['labels'] | default(omit) }}"
+    low_flap_threshold: "{{ item['check']['low_flap_threshold'] | default(omit) }}"
+    name: "{{ item['check']['name'] }}"
+    namespace: "{{ item['check']['namespace'] | default(omit) }}"
+    output_metric_format: "{{ item['check']['output_metric_format'] | default(omit) }}"
+    output_metric_handlers: "{{ item['check']['output_metric_handlers'] | default(omit) }}"
+    publish: "{{ item['check']['publish'] | default(omit) }}"
+    round_robin: "{{ item['check']['round_robin'] | default(omit) }}"
+    runtime_assets: "{{ item['check']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['check']['state'] | default(omit) }}"
+    stdin: "{{ item['check']['stdin'] | default(omit) }}"
+    subscriptions: "{{ item['check']['subscriptions'] | default(omit) }}"
+    timeout: "{{ item['check']['timeout'] | default(omit) }}"
+    ttl: "{{ item['check']['ttl'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_checks }}"
