@@ -17,6 +17,7 @@
     - name: trombik.freebsd_pkg_repo
       when: ansible_os_family == 'FreeBSD'
     - name: trombik.vim
+    - name: trombik.tmux
     - name: trombik.zsh
     - name: trombik.git
     - name: users

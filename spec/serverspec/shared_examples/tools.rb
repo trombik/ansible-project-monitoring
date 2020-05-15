@@ -19,10 +19,7 @@ shared_examples "a host with all basic tools installed" do
     end
 
     describe command("#{p[:cmd]} #{p[:opts]}") do
-      its(:exit_status) do
-        pending "package is not yet available in the repository" if p[:cmd] == "tmux"
-        should eq 0
-      end
+      its(:exit_status) { should eq 0 }
     end
   end
 end
