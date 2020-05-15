@@ -2,9 +2,13 @@
 
 # __________________________________________backend
 os_sensu_go_backend_extra_packages:
-  FreeBSD: sysutils/sensu-go-cli
-  Debian: sensu-go-cli
-  RedHat: sensu-go-cli
+  FreeBSD:
+    - sysutils/sensu-go-cli
+    - net-mgmt/nagios-plugins
+  Debian:
+    - sensu-go-cli
+  RedHat:
+    - sensu-go-cli
 sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
 sensu_go_backend_admin_account: admin
 sensu_go_backend_admin_password: P@ssw0rd!
@@ -22,3 +26,64 @@ os_sensu_go_backend_flags:
   Debian: ""
   RedHat: ""
 sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
+
+sensu_go_backend_entities: []
+sensu_go_backend_assets: []
+
+sensu_go_backend_checks:
+  - check:
+      name: check_swap
+      command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_swap -w 50% -c 30%"
+      output_metric_format: nagios_perfdata
+      interval: 60
+      publish: true
+      ttl: 600
+      subscriptions:
+        - system
+  - check:
+      name: check_load
+      command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_load -w 1,2,3 -c 2,3,4"
+      output_metric_format: nagios_perfdata
+      interval: 60
+      publish: true
+      ttl: 600
+      subscriptions:
+        - system
+  - check:
+      name: uptime-check
+      state: absent
+
+sensu_go_backend_roles:
+  - role:
+      name: "{{ project_readonly_user }}"
+      rules:
+        - verbs:
+            - list
+            - get
+          resources:
+            - assets
+            - checks
+            - entities
+            - events
+            - filters
+            - handlers
+            - hooks
+            - mutators
+            - rolebindings
+            - roles
+            - searches
+            - silenced
+
+sensu_go_backend_users:
+  - user:
+      name: "{{ project_readonly_user }}"
+      password: "{{ project_readonly_pass }}"
+      groups: []
+
+sensu_go_backend_role_bindings:
+  - role_binding:
+      name: "{{ project_readonly_user }}"
+      role: "{{ project_readonly_user }}"
+      groups: []
+      users:
+        - "{{ project_readonly_user }}"
