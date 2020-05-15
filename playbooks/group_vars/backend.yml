@@ -1,5 +1,14 @@
 ---
 
+# __________________________________________agent
+sensu_go_agent_config:
+  backend-url: ws://172.16.100.254:8081
+  cache-dir: "{{ sensu_go_agent_cache_dir }}"
+  subscriptions:
+    - system
+    - proxy
+  labels: "{{ project_agent_label }}"
+
 # __________________________________________backend
 os_sensu_go_backend_extra_packages:
   FreeBSD:
@@ -27,10 +36,35 @@ os_sensu_go_backend_flags:
   RedHat: ""
 sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
 
-sensu_go_backend_entities: []
+sensu_go_backend_entities:
+  - entity:
+      name: 8.8.8.8
+      entity_class: proxy
+      system:
+        hostname: 8.8.8.8
+        platform: unknown
+      labels:
+        target_host: 8.8.8.8
+        proxy_type: dig
+
 sensu_go_backend_assets: []
 
 sensu_go_backend_checks:
+  - check:
+      name: check_dig
+      # command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_dig -l google.com -H {% raw %}{{ .labels.target_host }}{% endraw %}"
+      command: "/usr/local/libexec/nagios/check_dig -l google.com -H {% raw %}{{ .labels.target_host }}{% endraw %}"
+      output_metric_format: nagios_perfdata
+      interval: 60
+      publish: true
+      subscriptions:
+        - proxy
+      proxy_requests:
+        entity_attributes:
+          - "entity.entity_class == 'proxy'"
+          - "entity.labels.proxy_type == 'dig'"
+      state: present
+
   - check:
       name: check_swap
       command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_swap -w 50% -c 30%"

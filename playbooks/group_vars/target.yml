@@ -8,3 +8,10 @@ os_sensu_go_agent_extra_packages:
   RedHat:
   OpenBSD: []
 sensu_go_agent_extra_packages: "{{ os_sensu_go_agent_extra_packages[ansible_os_family] }}"
+
+sensu_go_agent_config:
+  backend-url: ws://172.16.100.254:8081
+  cache-dir: "{{ sensu_go_agent_cache_dir }}"
+  subscriptions:
+    - system
+  labels: "{{ project_agent_label }}"

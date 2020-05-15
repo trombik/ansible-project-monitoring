@@ -22,13 +22,6 @@ os_project_agent_label:
     nagios_plugin_dir: /usr/lib64/nagios/plugins
 project_agent_label: "{{ os_project_agent_label[ansible_os_family] }}"
 
-sensu_go_agent_config:
-  backend-url: ws://172.16.100.254:8081
-  cache-dir: "{{ sensu_go_agent_cache_dir }}"
-  subscriptions:
-    - system
-  labels: "{{ project_agent_label }}"
-
 os_sensu_go_agent_flags:
   FreeBSD: ""
   Debian: ""
