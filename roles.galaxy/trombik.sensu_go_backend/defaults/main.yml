@@ -16,3 +16,16 @@ sensu_go_backend_admin_password: ""
 sensu_go_backend_flush_handlers: yes
 sensu_go_backend_assets: []
 sensu_go_backend_checks: []
+sensu_go_backend_namespaces: []
+sensu_go_backend_roles: []
+sensu_go_backend_users: []
+sensu_go_backend_role_bindings: []
+sensu_go_backend_bonsai_assets: []
+sensu_go_backend_pipe_handlers: []
+sensu_go_backend_socket_handlers: []
+sensu_go_backend_tessen: []
+sensu_go_backend_hooks: []
+sensu_go_backend_filters: []
+sensu_go_backend_entities: []
+
+sensu_go_backend_users_ignore_changed: no
