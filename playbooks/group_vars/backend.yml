@@ -45,6 +45,18 @@ sensu_go_backend_entities:
         platform: unknown
       labels:
         target_host: 8.8.8.8
+        query_address: google.com
+        proxy_type: dig
+  - entity:
+      name: mx.trombik.org
+      entity_class: proxy
+      system:
+        hostname: mx1.trombik.org
+        platform: openbsd
+        os: openbsd
+      labels:
+        target_host: a.ns.trombik.org
+        query_address: trombik.org
         proxy_type: dig
 
 sensu_go_backend_assets: []
@@ -52,8 +64,7 @@ sensu_go_backend_assets: []
 sensu_go_backend_checks:
   - check:
       name: check_dig
-      # command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_dig -l google.com -H {% raw %}{{ .labels.target_host }}{% endraw %}"
-      command: "/usr/local/libexec/nagios/check_dig -l google.com -H {% raw %}{{ .labels.target_host }}{% endraw %}"
+      command: "/usr/local/libexec/nagios/check_dig -H {% raw %}{{ .labels.target_host }}{% endraw %} --query_address={% raw %}{{ .labels.query_address }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 60
       publish: true
