@@ -132,6 +132,8 @@
     namespace: "{{ item['check']['namespace'] | default(omit) }}"
     output_metric_format: "{{ item['check']['output_metric_format'] | default(omit) }}"
     output_metric_handlers: "{{ item['check']['output_metric_handlers'] | default(omit) }}"
+    proxy_entity_name: "{{ item['check']['proxy_entity_name'] | default(omit) }}"
+    proxy_requests: "{{ item['check']['proxy_requests'] | default(omit) }}"
     publish: "{{ item['check']['publish'] | default(omit) }}"
     round_robin: "{{ item['check']['round_robin'] | default(omit) }}"
     runtime_assets: "{{ item['check']['runtime_assets'] | default(omit) }}"
