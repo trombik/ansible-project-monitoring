@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../spec_helper"
 
 domain_name = "i.trombik.org"
