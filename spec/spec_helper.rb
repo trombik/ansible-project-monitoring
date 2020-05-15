@@ -1,11 +1,14 @@
+# frozen_string_literal: true
+
 require "English"
 require "rspec/retry"
 require "net/ssh"
 require "pathname"
 require "vagrant/serverspec"
 require "vagrant/ssh/config"
+require "ansibleinventory"
+require "ansible/vault"
 $LOAD_PATH.unshift(Pathname.new(File.dirname(__FILE__)).parent + "ruby" + "lib")
-require "ansible_inventory"
 
 ENV["LANG"] = "C"
 
@@ -38,18 +41,17 @@ end
 
 # Returns path to inventory file
 #
-# @return [Pathname]
+# @return [String]
 def inventory_path
   Pathname.new(__FILE__)
           .parent
           .parent + "inventories" + test_environment
 end
 
-# Returns path to `playbooks`
-#
-# @return [Pathname]
-def playbooks_path
-  Pathname.new(__FILE__)
-          .parent
-          .parent + "playbooks"
+# Returns YAML content as hash
+def credentials_yaml
+  file = Pathname.new("playbooks") + "group_vars" + "#{test_environment}-credentials.yml"
+  YAML.safe_load(Ansible::Vault.decrypt(file: file))
+rescue RuntimeError
+  YAML.load_file(file)
 end
