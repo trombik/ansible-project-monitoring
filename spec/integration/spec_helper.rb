@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../spec_helper"
 require "infrataster/rspec"
 require "infrataster-plugin-firewall"
@@ -47,9 +49,7 @@ def vagrant_status
   out = ""
   Bundler.with_clean_env do
     out = `vagrant status --machine-readable`
-    unless $CHILD_STATUS.exitstatus.zero?
-      raise StandardError, "Failed to run vagrant status"
-    end
+    raise StandardError, "Failed to run vagrant status" unless $CHILD_STATUS.exitstatus.zero?
   end
   out
 end
@@ -61,6 +61,7 @@ def ansible_inventory_list
   cmd = "ansible-inventory -i inventories/#{test_environment} --yaml --list"
   out = `#{cmd}`
   raise "failed to run command `#{cmd}`" unless $CHILD_STATUS.exitstatus.zero?
+
   out
 end
 
@@ -81,9 +82,8 @@ def vagrant_machines
 end
 
 vagrant_machines.each do |server|
-  unless inventory.host(server).key?("ansible_host")
-    raise "server `#{server}` does not have `ansible_host` in the inventory"
-  end
+  raise "server `#{server}` does not have `ansible_host` in the inventory" unless inventory.host(server).key?("ansible_host")
+
   Bundler.with_clean_env do
     Infrataster::Server.define(
       server.to_sym,
