@@ -1,3 +1,7 @@
+## Release 1.1.1
+
+* 07a798c bugfix: add proxy_requests and proxy_entity_name
+
 ## Release 1.1.0
 
 * 776091b feature: support entity
