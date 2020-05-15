@@ -55,11 +55,18 @@ None
 | `sensu_go_backend_flush_handlers` | if true, run `meta` `ansible` action during the play | `true` |
 | `sensu_go_backend_assets` | list of `sensu-go` `asset` (see below) | `[]` |
 | `sensu_go_backend_checks` | list of `sense-go` `check` (see below) | `[]` |
-
-## `sensu_go_backend_flags`
-
-This variable is used to configure startup options for the service. What it
-does depends on platform.
+| `sensu_go_backend_namespaces` | list of `sensu-go` `namespace` (see below) | `[]` |
+| `sensu_go_backend_roles` | list of `sensu-go` `role` (see below) | `[]` |
+| `sensu_go_backend_users` | list of `sensu-go` `user` (see below) | `[]` |
+| `sensu_go_backend_users_ignore_changed` | if true, ignore `changed=true` of `user` resource. you should not set this to true unless you have [a valid reason](https://github.com/sensu/sensu-go-ansible/issues/183) to do so. | `no` |
+| `sensu_go_backend_role_bindings` | list of `sensu-go` `role_binding` (see below) | `[]` |
+| `sensu_go_backend_bonsai_assets` | list of `sensu-go` `bonsai_asset` (see below) | `[]` |
+| `sensu_go_backend_pipe_handlers` | list of `sensu-go` `pipe_handler` (see below) | `[]` |
+| `sensu_go_backend_socket_handlers` | list of `sensu-go` `socket_handler` (see below) | `[]` |
+| `sensu_go_backend_tessen` | list of `sensu-go` `tessen` (see below) | `[]` |
+| `sensu_go_backend_hooks` | list of `sensu-go` `hook` (see below) | `[]` |
+| `sensu_go_backend_filters` | list of `sensu-go` `filter` (see below) | `[]` |
+| `sensu_go_backend_entities` | list of `sensu-go` `entity` (see below) | `[]` |
 
 ## `sensu_go_backend_assets`
 
@@ -69,6 +76,14 @@ This is a list of dict. The dict requires the following keys and values.
 |-----|-------------|------------|
 | `asset` | a dict of arguments passed to `asset` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
 
+## `sensu_go_backend_users`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `user` | a dict of arguments passed to `user` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
 ## `sensu_go_backend_checks`
 
 This is a list of dict. The dict requires the following keys and values.
@@ -77,6 +92,92 @@ This is a list of dict. The dict requires the following keys and values.
 |-----|-------------|------------|
 | `check` | a dict of arguments passed to `check` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
 
+## `sensu_go_backend_namespaces`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `namespace` | a dict of arguments passed to `namespace` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_role`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `role` | a dict of arguments passed to `role` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_role_bindings`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `role_binding` | a dict of arguments passed to `role_binding` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_bonsai_assets`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `bonsai_asset` | a dict of arguments passed to `bonsai_asset` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_pipe_handlers`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `pipe_handler` | a dict of arguments passed to `pipe_handler` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_socket_handlers`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `socket_handler` | a dict of arguments passed to `socket_handler` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_tessen`
+
+This is a list of dict. The dict requires the following keys and values.
+Although this is a list, the list should contain a single dict because there
+is only one `tessen`.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `tessen` | a dict of arguments passed to `tessen` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_hooks`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `hook` | a dict of arguments passed to `hook` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_filters`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `filter` | a dict of arguments passed to `filter` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_entitys`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `entity` | a dict of arguments passed to `entity` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_flags`
+
+This variable is used to configure startup options for the service. What it
+does depends on platform.
 
 ### FreeBSD
 

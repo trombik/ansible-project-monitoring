@@ -52,6 +52,58 @@
   when:
     - sensu_go_backend_flush_handlers
 
+- name: Configure sensu_go_backend_namespaces
+  sensu.sensu_go.namespace:
+    auth: "{{ item['namespace']['auth'] | default(omit) }}"
+    name: "{{ item['namespace']['name'] }}"
+    state: "{{ item['namespace']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_namespaces }}"
+
+- name: Configure sensu_go_backend_filters
+  sensu.sensu_go.filter:
+    action: "{{ item['filter']['action'] | default(omit) }}"
+    annotations: "{{ item['filter']['annotations'] | default(omit) }}"
+    auth: "{{ item['filter']['auth'] | default(omit) }}"
+    expressions: "{{ item['filter']['expressions'] | default(omit) }}"
+    labels: "{{ item['filter']['labels'] | default(omit) }}"
+    name: "{{ item['filter']['name'] }}"
+    namespace: "{{ item['filter']['namespace'] | default(omit) }}"
+    runtime_assets: "{{ item['filter']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['filter']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_filters }}"
+
+- name: Configure sensu_go_backend_roles
+  sensu.sensu_go.role:
+    auth: "{{ item['role']['auth'] | default(omit) }}"
+    name: "{{ item['role']['name'] }}"
+    namespace: "{{ item['role']['namespace'] | default(omit) }}"
+    rules: "{{ item['role']['rules'] | default(omit) }}"
+    state: "{{ item['role']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_roles }}"
+
+- name: Configure sensu_go_backend_users
+  sensu.sensu_go.user:
+    auth: "{{ item['user']['auth'] | default(omit) }}"
+    groups: "{{ item['user']['group'] | default(omit) }}"
+    name: "{{ item['user']['name'] }}"
+    password: "{{ item['user']['password'] | default(omit) }}"
+    state: "{{ item['user']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_users }}"
+  register: __sensu_go_backend_users_result
+  changed_when: __sensu_go_backend_users_result['changed'] and not sensu_go_backend_users_ignore_changed
+
+- name: Configure sensu_go_backend_role_bindings
+  sensu.sensu_go.role_binding:
+    auth: "{{ item['role_binding']['auth'] | default(omit) }}"
+    cluster_role: "{{ item['role_binding']['cluster_role'] | default(omit) }}"
+    groups: "{{ item['role_binding']['groups'] | default(omit) }}"
+    name: "{{ item['role_binding']['name'] }}"
+    namespace: "{{ item['role_binding']['namespace'] | default(omit) }}"
+    role: "{{ item['role_binding']['role'] | default(omit) }}"
+    state: "{{ item['role_binding']['state'] | default(omit) }}"
+    users: "{{ item['role_binding']['users'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_role_bindings }}"
+
 - name: Configure sensu_go_backend_assets
   sensu.sensu_go.asset:
     annotations: "{{ item['asset']['annotations'] | default(omit) }}"
@@ -89,3 +141,83 @@
     timeout: "{{ item['check']['timeout'] | default(omit) }}"
     ttl: "{{ item['check']['ttl'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_checks }}"
+
+- name: Configure sensu_go_backend_bonsai_assets
+  sensu.sensu_go.bonsai_asset:
+    annotations: "{{ item['bonsai_asset']['annotations'] | default(omit) }}"
+    auth: "{{ item['bonsai_asset']['auth'] | default(omit) }}"
+    labels: "{{ item['bonsai_asset']['labels'] | default(omit) }}"
+    name: "{{ item['bonsai_asset']['name'] }}"
+    namespace: "{{ item['bonsai_asset']['namespace'] | default(omit) }}"
+    rename: "{{ item['bonsai_asset']['rename'] | default(omit) }}"
+    version: "{{ item['bonsai_asset']['version'] }}"
+  with_items: "{{ sensu_go_backend_bonsai_assets }}"
+
+- name: Configure sensu_go_backend_pipe_handlers
+  sensu.sensu_go.pipe_handler:
+    annotations: "{{ item['pipe_handler']['annotations'] | default(omit) }}"
+    auth: "{{ item['pipe_handler']['auth'] | default(omit) }}"
+    command: "{{ item['pipe_handler']['command'] | default(omit) }}"
+    env_vars: "{{ item['pipe_handler']['env_vars'] | default(omit) }}"
+    filters: "{{ item['pipe_handler']['filters'] | default(omit) }}"
+    labels: "{{ item['pipe_handler']['labels'] | default(omit) }}"
+    mutator: "{{ item['pipe_handler']['mutator'] | default(omit) }}"
+    name: "{{ item['pipe_handler']['name'] }}"
+    namespace: "{{ item['pipe_handler']['namespace'] | default(omit) }}"
+    runtime_assets: "{{ item['pipe_handler']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['pipe_handler']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_pipe_handlers }}"
+
+- name: Configure sensu_go_backend_socket_handlers
+  sensu.sensu_go.socket_handler:
+    annotations: "{{ item['socket_handler']['annotations'] | default(omit) }}"
+    auth: "{{ item['socket_handler']['auth'] | default(omit) }}"
+    filters: "{{ item['socket_handler']['filters'] | default(omit) }}"
+    host: "{{ item['socket_handler']['host'] | default(omit) }}"
+    labels: "{{ item['socket_handler']['labels'] | default(omit) }}"
+    mutator: "{{ item['socket_handler']['mutator'] | default(omit) }}"
+    name: "{{ item['socket_handler']['name'] }}"
+    namespace: "{{ item['socket_handler']['namespace'] | default(omit) }}"
+    port: "{{ item['socket_handler']['port'] | default(omit) }}"
+    state: "{{ item['socket_handler']['state'] | default(omit) }}"
+    timeout: "{{ item['socket_handler']['timeout'] | default(omit) }}"
+    type: "{{ item['socket_handler']['type'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_socket_handlers }}"
+
+- name: Configure sensu_go_backend_tessen
+  sensu.sensu_go.tessen:
+    auth: "{{ item['tessen']['auth'] | default(omit) }}"
+    state: "{{ item['tessen']['state'] }}"
+  with_items: "{{ sensu_go_backend_tessen }}"
+
+- name: Configure sensu_go_backend_hooks
+  sensu.sensu_go.hook:
+    annotations: "{{ item['hook']['annotations'] | default(omit) }}"
+    auth: "{{ item['hook']['auth'] | default(omit) }}"
+    command: "{{ item['hook']['command'] | default(omit) }}"
+    labels: "{{ item['hook']['labels'] | default(omit) }}"
+    name: "{{ item['hook']['name'] }}"
+    namespace: "{{ item['hook']['namespace'] | default(omit) }}"
+    runtime_assets: "{{ item['hook']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['hook']['state'] | default(omit) }}"
+    stdin: "{{ item['hook']['stdin'] | default(omit) }}"
+    timeout: "{{ item['hook']['timeout'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_hooks }}"
+
+- name: Configure sensu_go_backend_entities
+  sensu.sensu_go.entity:
+    annotations: "{{ item['entity']['annotations'] | default(omit) }}"
+    auth: "{{ item['entity']['auth'] | default(omit) }}"
+    deregister: "{{ item['entity']['deregister'] | default(omit) }}"
+    deregistration_handler: "{{ item['entity']['deregistration_handler'] | default(omit) }}"
+    entity_class: "{{ item['entity']['entity_class'] | default(omit) }}"
+    labels: "{{ item['entity']['labels'] | default(omit) }}"
+    last_seen: "{{ item['entity']['last_seen'] | default(omit) }}"
+    name: "{{ item['entity']['name'] }}"
+    namespace: "{{ item['entity']['namespace'] | default(omit) }}"
+    redact: "{{ item['entity']['redact'] | default(omit) }}"
+    state: "{{ item['entity']['state'] | default(omit) }}"
+    subscriptions: "{{ item['entity']['subscriptions'] | default(omit) }}"
+    system: "{{ item['entity']['system'] | default(omit) }}"
+    user: "{{ item['entity']['user'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_entities }}"

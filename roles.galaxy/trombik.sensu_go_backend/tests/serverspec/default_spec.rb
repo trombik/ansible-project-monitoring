@@ -116,17 +116,51 @@ describe command("sensuctl configure -n --url http://127.0.0.1:8080 --username #
     Specinfra.backend.run_command("rm -rf /root/.config/sensu")
   end
   its(:exit_status) { should eq 0 }
-  its(:stderr) { should match(/Using Basic Auth in HTTP mode is not secure, use HTTPS/) }
+  case os[:family]
+  when "freebsd"
+    its(:stderr) { should match(/Using Basic Auth in HTTP mode is not secure/) }
+  else
+    its(:stderr) { should eq "" }
+  end
+
   its(:stdout) { should eq "" }
 end
 
-describe command "sensuctl asset list --format json" do
+describe command "sensuctl namespace list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("name" => "default")) }
+  its(:stdout_as_json) { should include(include("name" => "server")) }
+end
+
+describe command "sensuctl role list --namespace server --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "readonly"))) }
+  its(:stdout_as_json) { should include(include("metadata" => include("namespace" => "server"))) }
+end
+
+describe command "sensuctl user list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("username" => "readonly-user")) }
+end
+
+describe command "sensuctl role-binding list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "readonly"))) }
+  its(:stdout_as_json) { should include(include("role_ref" => include("name" => "readonly"))) }
+  its(:stdout_as_json) { should include(include("subjects" => include(include("name" => "readonly-user")))) }
+end
+
+describe command "sensuctl asset list --namespace server --format json" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout_as_json) { should include(include("metadata" => include("name" => "sensu-go-uptime-check"))) }
 end
 
-describe command "sensuctl check list --format json" do
+describe command "sensuctl check list --namespace server --format json" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout_as_json) { should include(include("command" => "sensu-go-uptime-check -w 72h -c 168h")) }
@@ -138,4 +172,46 @@ describe command "sensuctl entity list --format json" do
   its(:stdout_as_json) { should include(include("entity_class" => "agent")) }
   its(:stdout_as_json) { should include(include("system" => include("platform" => os[:family] == "redhat" ? "centos" : os[:family]))) }
   its(:stdout_as_json) { should include(include("subscriptions" => include("system"))) }
+end
+
+describe command "sensuctl asset info --namespace server asachs01/sensu-go-uptime-check --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include("metadata" => include("name" => "asachs01/sensu-go-uptime-check")) }
+end
+
+describe command "sensuctl handler list --namespace server --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "dev-null"))) }
+end
+
+describe command "sensuctl handler list --namespace server --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "tcp_handler"))) }
+end
+
+describe command "sensuctl tessen info --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include("opt_out" => true) }
+end
+
+describe command "sensuctl hook list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "reboot"))) }
+end
+
+describe command "sensuctl filter list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "ignore_devel_environment"))) }
+end
+
+describe command "sensuctl entity list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "sensu-docs"))) }
 end
