@@ -1,1 +1,10 @@
 ---
+
+os_sensu_go_agent_extra_packages:
+  FreeBSD:
+    - sysutils/sensu-go-cli
+    - net-mgmt/nagios-plugins
+  Debian: []
+  RedHat:
+  OpenBSD: []
+sensu_go_agent_extra_packages: "{{ os_sensu_go_agent_extra_packages[ansible_os_family] }}"
