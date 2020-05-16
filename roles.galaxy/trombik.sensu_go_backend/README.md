@@ -67,6 +67,8 @@ None
 | `sensu_go_backend_hooks` | list of `sensu-go` `hook` (see below) | `[]` |
 | `sensu_go_backend_filters` | list of `sensu-go` `filter` (see below) | `[]` |
 | `sensu_go_backend_entities` | list of `sensu-go` `entity` (see below) | `[]` |
+| `sensu_go_backend_cluster_roles` | list of `sensu-go` `cluster_role` (see below) | `[]` |
+| `sensu_go_backend_cluster_role_bindings` | list of `sensu-go` `cluster_role_binding` (see below) | `[]` |
 
 ## `sensu_go_backend_assets`
 
@@ -173,6 +175,22 @@ This is a list of dict. The dict requires the following keys and values.
 | Key | Description | Mandatory? |
 |-----|-------------|------------|
 | `entity` | a dict of arguments passed to `entity` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_cluster_roles`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `cluster_role` | a dict of arguments passed to `cluster_role` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
+## `sensu_go_backend_cluster_role_bindings`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `cluster_role_binding` | a dict of arguments passed to `cluster_role_binding` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
 
 ## `sensu_go_backend_flags`
 
@@ -289,6 +307,88 @@ does depends on platform.
       Debian: ""
       RedHat: ""
     sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
+
+    sensu_go_backend_namespaces:
+      - namespace:
+          name: server
+    sensu_go_backend_cluster_roles:
+      - cluster_role:
+          name: readonly-cluster
+          rules:
+            - verbs:
+                - list
+                - get
+              resources:
+                # cluster-wide
+                - authproviders
+                - cluster
+                - clusterrolebindings
+                - clusterroles
+                - etcd-replicators
+                - license
+                - namespaces
+                - provider
+                - providers
+                - secrets
+                - users
+                # namespace
+                - assets
+                - checks
+                - entities
+                - events
+                - filters
+                - handlers
+                - hooks
+                - mutators
+                - rolebindings
+                - roles
+                - searches
+                - silenced
+    sensu_go_backend_roles:
+      - role:
+          name: readonly
+          namespace: server
+          rules:
+            - verbs:
+                - list
+                - get
+              resources:
+                - assets
+                - checks
+                - entities
+                - events
+                - filters
+                - handlers
+                - hooks
+                - mutators
+                - rolebindings
+                - roles
+                - searches
+                - silenced
+    # XXX see https://github.com/sensu/sensu-go-ansible/issues/183
+    sensu_go_backend_users_ignore_changed: yes
+    sensu_go_backend_users:
+      - user:
+          name: readonly-user
+          password: PassWord
+          groups: []
+      - user:
+          name: readonly-cluster-user
+          password: PassWord
+          groups: []
+    sensu_go_backend_role_bindings:
+      - role_binding:
+          name: readonly
+          role: readonly
+          groups: []
+          users:
+            - readonly-user
+    sensu_go_backend_cluster_role_bindings:
+      - cluster_role_binding:
+          name: cluster-wide-readonly
+          cluster_role: readonly-cluster
+          users:
+            - readonly-cluster-user
     sensu_go_backend_checks:
       - check:
           name: check
@@ -299,9 +399,11 @@ does depends on platform.
           publish: yes
           runtime_assets:
             - sensu-go-uptime-check
+          namespace: server
     sensu_go_backend_assets:
       - asset:
           name: sensu-go-uptime-check
+          namespace: server
           auth:
             user: "{{ sensu_go_backend_admin_account }}"
             password: "{{ sensu_go_backend_admin_password }}"
@@ -312,6 +414,53 @@ does depends on platform.
                 - entity.system.arch == 'amd64'
               url: https://github.com/asachs01/sensu-go-uptime-check/releases/download/1.0.2/sensu-go-uptime-check_1.0.2_freebsd_amd64.tar.gz
 
+    sensu_go_backend_bonsai_assets:
+      - bonsai_asset:
+          name: asachs01/sensu-go-uptime-check
+          namespace: server
+          version: 1.0.2
+
+    sensu_go_backend_pipe_handlers:
+      - pipe_handler:
+          name: dev-null
+          command: cat
+          namespace: server
+
+    sensu_go_backend_socket_handlers:
+      - socket_handler:
+          name: tcp_handler
+          namespace: server
+          host: 127.0.0.1
+          type: udp
+          port: 53
+    sensu_go_backend_tessen:
+      - tessen:
+          state: disabled
+    sensu_go_backend_hooks:
+      - hook:
+          name: reboot
+          command: shutdown -r now
+          timeout: 600
+          stdin: false
+    sensu_go_backend_filters:
+      - filter:
+          name: ignore_devel_environment
+          action: deny
+          expressions:
+            - event.entity.labels['environment'] == 'devel'
+    sensu_go_backend_entities:
+      - entity:
+          name: sensu-docs
+          labels:
+            url: docs.sensu.io
+          deregister: false
+          entity_class: proxy
+          last_seen: 0
+          subscriptions:
+            - proxy
+          system:
+            network:
+              interfaces: null
     # __________________________________________package
     freebsd_pkg_repo:
 
