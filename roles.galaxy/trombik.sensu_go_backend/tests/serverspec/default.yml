@@ -51,6 +51,39 @@
     sensu_go_backend_namespaces:
       - namespace:
           name: server
+    sensu_go_backend_cluster_roles:
+      - cluster_role:
+          name: readonly-cluster
+          rules:
+            - verbs:
+                - list
+                - get
+              resources:
+                # cluster-wide
+                - authproviders
+                - cluster
+                - clusterrolebindings
+                - clusterroles
+                - etcd-replicators
+                - license
+                - namespaces
+                - provider
+                - providers
+                - secrets
+                - users
+                # namespace
+                - assets
+                - checks
+                - entities
+                - events
+                - filters
+                - handlers
+                - hooks
+                - mutators
+                - rolebindings
+                - roles
+                - searches
+                - silenced
     sensu_go_backend_roles:
       - role:
           name: readonly
@@ -58,6 +91,7 @@
           rules:
             - verbs:
                 - list
+                - get
               resources:
                 - assets
                 - checks
@@ -78,6 +112,10 @@
           name: readonly-user
           password: PassWord
           groups: []
+      - user:
+          name: readonly-cluster-user
+          password: PassWord
+          groups: []
     sensu_go_backend_role_bindings:
       - role_binding:
           name: readonly
@@ -85,7 +123,12 @@
           groups: []
           users:
             - readonly-user
-
+    sensu_go_backend_cluster_role_bindings:
+      - cluster_role_binding:
+          name: cluster-wide-readonly
+          cluster_role: readonly-cluster
+          users:
+            - readonly-cluster-user
     sensu_go_backend_checks:
       - check:
           name: check

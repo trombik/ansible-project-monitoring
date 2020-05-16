@@ -215,3 +215,15 @@ describe command "sensuctl entity list --format json" do
   its(:stderr) { should eq "" }
   its(:stdout_as_json) { should include(include("metadata" => include("name" => "sensu-docs"))) }
 end
+
+describe command "sensuctl cluster-role list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "readonly-cluster"))) }
+end
+
+describe command "sensuctl cluster-role-binding list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "cluster-wide-readonly"))) }
+end

@@ -81,6 +81,24 @@
     state: "{{ item['role']['state'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_roles }}"
 
+- name: Configure sensu_go_backend_cluster_roles
+  sensu.sensu_go.cluster_role:
+    auth: "{{ item['cluster_role']['auth'] | default(omit) }}"
+    name: "{{ item['cluster_role']['name'] }}"
+    rules: "{{ item['cluster_role']['rules'] | default(omit) }}"
+    state: "{{ item['cluster_role']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_cluster_roles }}"
+
+- name: Configure sensu_go_backend_cluster_role_bindings
+  sensu.sensu_go.cluster_role_binding:
+    auth: "{{ item['cluster_role_binding']['auth'] | default(omit) }}"
+    cluster_role: "{{ item['cluster_role_binding']['cluster_role'] | default(omit) }}"
+    groups: "{{ item['cluster_role_binding']['groups'] | default(omit) }}"
+    name: "{{ item['cluster_role_binding']['name'] }}"
+    state: "{{ item['cluster_role_binding']['state'] | default(omit) }}"
+    users: "{{ item['cluster_role_binding']['users'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_cluster_role_bindings }}"
+
 - name: Configure sensu_go_backend_users
   sensu.sensu_go.user:
     auth: "{{ item['user']['auth'] | default(omit) }}"

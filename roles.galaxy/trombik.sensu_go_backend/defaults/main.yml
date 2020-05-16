@@ -27,5 +27,7 @@ sensu_go_backend_tessen: []
 sensu_go_backend_hooks: []
 sensu_go_backend_filters: []
 sensu_go_backend_entities: []
+sensu_go_backend_cluster_roles: []
+sensu_go_backend_cluster_role_bindings: []
 
 sensu_go_backend_users_ignore_changed: no

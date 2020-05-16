@@ -1,3 +1,8 @@
+## Release 1.2.0
+
+* cf45731 doc: update the example
+* 46f1b9c feature: support cluster_role and cluster_role_binding
+
 ## Release 1.1.1
 
 * 07a798c bugfix: add proxy_requests and proxy_entity_name
