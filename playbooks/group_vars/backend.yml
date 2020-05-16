@@ -14,6 +14,11 @@ os_sensu_go_backend_extra_packages:
   FreeBSD:
     - sysutils/sensu-go-cli
     - net-mgmt/nagios-plugins
+    # for nagios/check_ssl_validity
+    - security/p5-Crypt-X509
+    - devel/p5-TimeDate
+    - www/p5-libwww
+    - textproc/p5-Text-Glob
   Debian:
     - sensu-go-cli
   RedHat:
@@ -38,6 +43,12 @@ sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
 
 sensu_go_backend_entities:
   - entity:
+      name: twitter.com
+      entity_class: proxy
+      labels:
+        cert_hostname: twitter.com
+        proxy_type: ssl_validity
+  - entity:
       name: 8.8.8.8
       entity_class: proxy
       system:
@@ -58,10 +69,85 @@ sensu_go_backend_entities:
         target_host: a.ns.trombik.org
         query_address: trombik.org
         proxy_type: dig
+  - entity:
+      name: b1f.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: b1f.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
+      name: f2f.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: f2f.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
+      name: b2f.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: b2f.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
+      name: f3f.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: f3f.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
+      name: b3f.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: b3f.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
+      name: openwrt.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: openwrt.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
 
 sensu_go_backend_assets: []
 
 sensu_go_backend_checks:
+  - check:
+      name: check_ssl_validity
+      command: "/usr/local/libexec/nagios/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
+      output_metric_format: nagios_perfdata
+      interval: 600
+      publish: true
+      subscriptions:
+        - proxy
+      proxy_requests:
+        entity_attributes:
+          - "entity.entity_class == 'proxy'"
+          - "entity.labels.proxy_type == 'ssl_validity'"
+      state: present
+  - check:
+      name: check_http_proxy
+      command: "/usr/local/libexec/nagios/check_http -H {% raw %}{{ .system.hostname }}{% endraw %}"
+      output_metric_format: nagios_perfdata
+      interval: 60
+      publish: true
+      subscriptions:
+        - proxy
+      proxy_requests:
+        entity_attributes:
+          - "entity.entity_class == 'proxy'"
+          - "entity.labels.proxy_type == 'http'"
+      state: present
+
   - check:
       name: check_dig
       command: "/usr/local/libexec/nagios/check_dig -H {% raw %}{{ .labels.target_host }}{% endraw %} --query_address={% raw %}{{ .labels.query_address }}{% endraw %}"
