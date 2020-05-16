@@ -70,6 +70,14 @@ sensu_go_backend_entities:
         query_address: trombik.org
         proxy_type: dig
   - entity:
+      name: default.i.trombik.org
+      entity_class: proxy
+      system:
+        hostname: default.i.trombik.org
+        platform: unknown
+      labels:
+        proxy_type: http
+  - entity:
       name: b1f.i.trombik.org
       entity_class: proxy
       system:
