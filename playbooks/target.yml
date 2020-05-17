@@ -18,5 +18,6 @@
     - name: trombik.vim
     - name: trombik.zsh
     - name: trombik.git
+    - name: trombik.language_ruby
     - name: users
     - name: trombik.sensu_go_agent

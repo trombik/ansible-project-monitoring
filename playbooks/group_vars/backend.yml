@@ -130,6 +130,14 @@ sensu_go_backend_assets: []
 
 sensu_go_backend_checks:
   - check:
+      name: check_disk
+      command: "{% raw %}{{ .labels.sensu_plugin_dir }}{% endraw %}/check-disk-usage.rb -w 70 -c 80"
+      interval: 60
+      publish: true
+      subscriptions:
+        - system
+      state: present
+  - check:
       name: check_ssl_validity
       command: "/usr/local/libexec/nagios/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
