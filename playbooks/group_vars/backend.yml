@@ -138,7 +138,7 @@ sensu_go_backend_checks:
         - system
       state: present
   - check:
-      name: check_ssl_validity
+      name: proxy_check_ssl_validity
       command: "/usr/local/libexec/nagios/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 600
@@ -151,7 +151,7 @@ sensu_go_backend_checks:
           - "entity.labels.proxy_type == 'ssl_validity'"
       state: present
   - check:
-      name: check_http_proxy
+      name: proxy_check_http
       command: "/usr/local/libexec/nagios/check_http -H {% raw %}{{ .system.hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 60
@@ -165,7 +165,7 @@ sensu_go_backend_checks:
       state: present
 
   - check:
-      name: check_dig
+      name: proxy_check_dig
       command: "/usr/local/libexec/nagios/check_dig -H {% raw %}{{ .labels.target_host }}{% endraw %} --query_address={% raw %}{{ .labels.query_address }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 60
