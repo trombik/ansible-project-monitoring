@@ -1,17 +1,56 @@
 ---
+os: linux
+dist: bionic
 language: ruby
 rvm:
   - 2.6
-cache: bundler
+cache:
+  directories:
+    - $HOME/.vagrant.d/boxes/
+  bundler: true
+  pip: true
 
-# Use the new container infrastructure
-sudo: false
+addons:
+  apt:
+    update: true
+    packages:
+      - python-pip
+      - curl
+
+      # for libvirt
+      - bridge-utils
+      - dnsmasq-base
+      - ebtables
+      - libvirt-bin
+      - libvirt-dev
+      - qemu-kvm
+      - qemu-utils
+      - ruby-dev
+
+      # for aspell
+      - aspell
+      - aspell-en
 
 before_install:
   - pyenv global 3.7
 
   # Use bundler 2.x
+  - yes | gem update --system --force
   - gem install bundler
+  - wget https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
+  - sudo dpkg -i vagrant_2.2.9_x86_64.deb
+  - vagrant --version
+
+  # for libvirt
+  - vagrant plugin install vagrant-libvirt
+  - sudo chmod go+rw /var/run/libvirt/libvirt-sock
+
+  # for virtualbox
+  - sudo apt-get install "linux-headers-`uname -r`"
+  - wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O - | sudo apt-key add -
+  - sudo add-apt-repository -y "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian `lsb_release -cs` contrib"
+  - sudo apt-get update
+  - sudo apt-get install virtualbox-6.1
 
 install:
   - npm install
@@ -21,7 +60,11 @@ install:
   - pip3 install --user yamllint ansible
   - bundle install --path=vendor/bundle --with development
 
-scripts:
+  # Check versions
+  - ansible --version
+
+script:
   - bundle exec rubocop --display-style-guide --extra-details --display-cop-names
   - node node_modules/markdownlint-cli/markdownlint.js .
   - yamllint -c .yamllint.yml .
+  - bundle exec rake test
