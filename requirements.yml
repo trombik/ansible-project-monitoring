@@ -13,6 +13,7 @@ roles:
   - name: trombik.freebsd_pkg_repo
   - name: trombik.apt_repo
   - name: trombik.tmux
+  - name: trombik.language_ruby
 
 collections:
   - name: sensu.sensu_go

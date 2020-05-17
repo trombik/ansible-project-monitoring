@@ -1,0 +1,11 @@
+---
+
+- name: Install ruby
+  openbsd_pkg:
+    name: "{{ language_ruby_package }}"
+    state: present
+
+- name: Create symlinks
+  shell: "pkg_info -M {{ language_ruby_package | quote }} | grep -E '^[[:space:]]+ln ' | sh -"
+  args:
+    creates: /usr/local/bin/ruby

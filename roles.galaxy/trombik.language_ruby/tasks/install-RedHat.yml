@@ -1,0 +1,6 @@
+---
+
+- name: Install ruby
+  yum:
+    name: "{{ language_ruby_package }}"
+    state: present
