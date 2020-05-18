@@ -2,3 +2,11 @@
 # `password`
 project_trombik_password: "$2b$08$jRKbjZhFw1GIjiz51qtGBumLydUNc606fv357XZE7hrS81M9GERpe"
 project_backend_url: "ws://172.16.100.254:8081"
+hosts_content: |
+  # XXX fixup pakcage host name untill the package tree is officially
+  # available to public
+  {% if '/home/travis/build/trombik/ansible-project-monitoring/inventories/virtualbox' in ansible_inventory_sources %}
+  96.9.84.211 pkg.i.trombik.org
+  {% else %}
+  192.168.99.203 pkg.i.trombik.org
+  {% endif %}
