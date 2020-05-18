@@ -1,6 +1,7 @@
 ---
 sensu_go_backend_user: "{{ __sensu_go_backend_user }}"
 sensu_go_backend_group: "{{ __sensu_go_backend_group }}"
+sensu_go_backend_home: "/home/{{ sensu_go_backend_user }}"
 sensu_go_backend_package: "{{ __sensu_go_backend_package }}"
 sensu_go_backend_extra_packages: "{{ __sensu_go_backend_extra_packages }}"
 sensu_go_backend_log_dir: /var/log/sensu
@@ -14,6 +15,8 @@ sensu_go_backend_flags: ""
 sensu_go_backend_admin_account: ""
 sensu_go_backend_admin_password: ""
 sensu_go_backend_flush_handlers: yes
+sensu_go_backend_api_host: 127.0.0.1
+sensu_go_backend_api_port: 8080
 sensu_go_backend_assets: []
 sensu_go_backend_checks: []
 sensu_go_backend_namespaces: []
@@ -29,5 +32,9 @@ sensu_go_backend_filters: []
 sensu_go_backend_entities: []
 sensu_go_backend_cluster_roles: []
 sensu_go_backend_cluster_role_bindings: []
+sensu_go_backend_use_embedded_ruby: no
+sensu_go_backend_embedded_ruby_dir: /opt/sensu-plugins-ruby/embedded
+sensu_go_backend_embedded_ruby_gem: "{{ sensu_go_backend_embedded_ruby_dir }}/bin/gem"
+sensu_go_backend_ruby_plugins: []
 
 sensu_go_backend_users_ignore_changed: no

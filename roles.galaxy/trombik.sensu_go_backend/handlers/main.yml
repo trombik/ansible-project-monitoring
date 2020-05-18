@@ -4,6 +4,13 @@
   service:
     name: "{{ sensu_go_backend_service }}"
     state: restarted
+  notify:
+    - Wait for sensu_go_backend
+
+- name: Wait for sensu_go_backend
+  wait_for:
+    host: "{{ sensu_go_backend_api_host }}"
+    port: "{{ sensu_go_backend_api_port }}"
 
 - name: Configure initial admin account
   command:
