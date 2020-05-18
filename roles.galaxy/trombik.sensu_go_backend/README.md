@@ -53,6 +53,8 @@ None
 | `sensu_go_backend_admin_account` | name of admin account | `""` |
 | `sensu_go_backend_admin_password` | password of admin account | `""` |
 | `sensu_go_backend_flush_handlers` | if true, run `meta` `ansible` action during the play | `true` |
+| `sensu_go_backend_api_host` | address of API endpoint that `ansible` has access to, which is used to wait for the backend to be online  along with `sensu_go_backend_api_port` | `127.0.0.1` |
+| `sensu_go_backend_api_port` | port of API endpoint that `ansible` has access to | `8080` |
 | `sensu_go_backend_assets` | list of `sensu-go` `asset` (see below) | `[]` |
 | `sensu_go_backend_checks` | list of `sense-go` `check` (see below) | `[]` |
 | `sensu_go_backend_namespaces` | list of `sensu-go` `namespace` (see below) | `[]` |
