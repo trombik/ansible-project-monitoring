@@ -116,13 +116,7 @@ describe command("sensuctl configure -n --url http://127.0.0.1:8080 --username #
     Specinfra.backend.run_command("rm -rf /root/.config/sensu")
   end
   its(:exit_status) { should eq 0 }
-  case os[:family]
-  when "freebsd"
-    its(:stderr) { should match(/Using Basic Auth in HTTP mode is not secure/) }
-  else
-    its(:stderr) { should eq "" }
-  end
-
+  its(:stderr) { should eq "" }
   its(:stdout) { should eq "" }
 end
 
