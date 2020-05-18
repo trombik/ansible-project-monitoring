@@ -134,8 +134,8 @@ namespace :test do
     directories.each do |d|
       desc "run integration spec #{d.basename}"
       task d.basename.to_s do
-        vault_password_file = ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
         test_env = ansible_environment
+        vault_password_file = ansible_environment == "virtualbox" ? ".ansible_vault_key_dummy" : ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
         Bundler.with_clean_env do
           ENV["ANSIBLE_ENVIRONMENT"] = test_env
           ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
@@ -157,8 +157,8 @@ namespace :test do
       # inside of `with_clean_env`. but because, in this case, the copied
       # environment inherits the bundler environment of `rake`, the environment
       # the process replaced is still bundler environment.
-      vault_password_file = ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
       test_env = ansible_environment
+      vault_password_file = ansible_environment == "virtualbox" ? ".ansible_vault_key_dummy" : ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
       user = run_as_user
       Bundler.with_clean_env do
         ENV["ANSIBLE_ENVIRONMENT"] = test_env
