@@ -5,11 +5,6 @@ localtime_zone:
   FreeBSD: Asia/Phnom_Penh
   Debian: Asia/Phnom_Penh
 
-resolver_config: |
-  nameserver 192.168.99.251
-  domain {{ ansible_domain }}
-  FreeBSD: Asia/Bangkok
-
 # __________________________________________agent
 os_project_naigos_plugin_dir:
   FreeBSD: /usr/local/libexec/nagios
