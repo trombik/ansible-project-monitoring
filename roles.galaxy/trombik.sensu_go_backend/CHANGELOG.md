@@ -1,3 +1,7 @@
+## Release 1.2.1
+
+* 3b548ba bugfix: wait_for the backend
+
 ## Release 1.2.0
 
 * cf45731 doc: update the example

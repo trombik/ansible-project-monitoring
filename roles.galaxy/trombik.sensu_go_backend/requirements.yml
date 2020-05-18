@@ -4,5 +4,6 @@ roles:
   - name: trombik.apt_repo
   - name: trombik.redhat_repo
   - name: trombik.sensu_go_agent
+  - name: trombik.language_ruby
 collections:
   - name: sensu.sensu_go

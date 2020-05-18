@@ -7,6 +7,8 @@
       when: ansible_os_family == 'Debian'
     - role: trombik.redhat_repo
       when: ansible_os_family == 'RedHat'
+    - role: trombik.language_ruby
+      when: ansible_os_family != 'RedHat'
 
     - role: trombik.sensu_go_agent
     - role: ansible-role-sensu_go_backend
@@ -26,10 +28,21 @@
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    os_sensu_go_backend_use_embedded_ruby:
+      FreeBSD: no
+      Debian: no
+      RedHat: yes
+    sensu_go_backend_use_embedded_ruby: "{{ os_sensu_go_backend_use_embedded_ruby[ansible_os_family] }}"
+    sensu_go_backend_ruby_plugins:
+      - sensu-handlers-elasticsearch
     os_sensu_go_backend_extra_packages:
-      FreeBSD: sysutils/sensu-go-cli
-      Debian: sensu-go-cli
-      RedHat: sensu-go-cli
+      FreeBSD:
+        - sysutils/sensu-go-cli
+      Debian:
+        - sensu-go-cli
+      RedHat:
+        - sensu-go-cli
+        - sensu-plugins-ruby
     sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
     sensu_go_backend_admin_account: admin
     sensu_go_backend_admin_password: P@ssw0rd!
@@ -45,7 +58,8 @@
     os_sensu_go_backend_flags:
       FreeBSD: ""
       Debian: ""
-      RedHat: ""
+      RedHat: |
+        EMBEDDED_RUBY=true
     sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
 
     sensu_go_backend_namespaces:
@@ -240,4 +254,10 @@
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
         gpgcheck: yes
+        enabled: yes
+      sensu_community:
+        baseurl: https://packagecloud.io/sensu/community/el/{{ ansible_distribution_major_version }}/$basearch
+        gpgkey: https://packagecloud.io/sensu/community/gpgkey
+        repo_gpgcheck: yes
+        gpgcheck: no
         enabled: yes

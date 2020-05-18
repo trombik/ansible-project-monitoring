@@ -15,6 +15,7 @@ admin_user = "admin"
 admin_password = "P@ssw0rd!"
 default_group = "root"
 extra_packages = []
+gems = %w[sensu-handlers-elasticsearch]
 
 case os[:family]
 when "redhat"
@@ -116,13 +117,7 @@ describe command("sensuctl configure -n --url http://127.0.0.1:8080 --username #
     Specinfra.backend.run_command("rm -rf /root/.config/sensu")
   end
   its(:exit_status) { should eq 0 }
-  case os[:family]
-  when "freebsd"
-    its(:stderr) { should match(/Using Basic Auth in HTTP mode is not secure/) }
-  else
-    its(:stderr) { should eq "" }
-  end
-
+  its(:stderr) { should eq "" }
   its(:stdout) { should eq "" }
 end
 
@@ -226,4 +221,19 @@ describe command "sensuctl cluster-role-binding list --format json" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout_as_json) { should include(include("metadata" => include("name" => "cluster-wide-readonly"))) }
+end
+
+gems.each do |g|
+  case os[:family]
+  when "redhat"
+    describe command "/opt/sensu-plugins-ruby/embedded/bin/gem list --local" do
+      its(:stderr) { should eq "" }
+      its(:stdout) { should match(/#{g}/) }
+    end
+  else
+    describe package g do
+      let(:sudo_options) { "-u #{user} --set-home" }
+      it { should be_installed.by("gem") }
+    end
+  end
 end
