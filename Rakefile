@@ -139,11 +139,8 @@ namespace :test do
     directories.each do |d|
       desc "run integration spec #{d.basename}"
       task d.basename.to_s do
-        test_env = ansible_environment
-        password_file = vault_password_file
-        Bundler.with_clean_env do
-          ENV["ANSIBLE_ENVIRONMENT"] = test_env
-          ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = password_file
+        ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
+        Bundler.with_original_env do
           configure_sudo_password_for(user)
           sh "bundle exec rspec #{d}/*_spec.rb"
         end
@@ -151,23 +148,9 @@ namespace :test do
     end
     desc "Run integration test"
     task :all do
-      # XXX run `bundler exec rspec` in a clean environment.
-      # the difference from running `rspec` in bundler environment is that:
-      # when invoking `rspec` within `with_clean_env`, the forked process can
-      # escape, or shellout, from the bundler environment.
-      #
-      # `rspec` is a different process. when you invoke `rspec` without
-      # `with_clean_env`, the bundler in `rspec` process keeps a copy of
-      # original environemnt and replace current environment with the copy when
-      # inside of `with_clean_env`. but because, in this case, the copied
-      # environment inherits the bundler environment of `rake`, the environment
-      # the process replaced is still bundler environment.
-      test_env = ansible_environment
-      password_file = vault_password_file
       user = run_as_user
-      Bundler.with_clean_env do
-        ENV["ANSIBLE_ENVIRONMENT"] = test_env
-        ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = password_file
+      ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
+      Bundler.with_original_env do
         configure_sudo_password_for(user)
         sh "bundle exec rspec spec/integration/**/*_spec.rb"
       end
