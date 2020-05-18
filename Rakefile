@@ -29,6 +29,10 @@ def ansible_environment
   env
 end
 
+def vault_password_file
+  ansible_environment == "virtualbox" ? ".ansible_vault_key_dummy" : ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
+end
+
 def inventory_path
   "inventories/#{ansible_environment}"
 end
@@ -98,6 +102,7 @@ namespace :test do
     desc "Run serverspec on all hosts"
     task "all" do
       inventory = AnsibleInventory.new(inventory_path)
+      ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
       inventory.all_groups.each do |g|
         next unless Dir.exist?("spec/serverspec/#{g}")
 
@@ -135,10 +140,10 @@ namespace :test do
       desc "run integration spec #{d.basename}"
       task d.basename.to_s do
         test_env = ansible_environment
-        vault_password_file = ansible_environment == "virtualbox" ? ".ansible_vault_key_dummy" : ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
+        password_file = vault_password_file
         Bundler.with_clean_env do
           ENV["ANSIBLE_ENVIRONMENT"] = test_env
-          ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
+          ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = password_file
           configure_sudo_password_for(user)
           sh "bundle exec rspec #{d}/*_spec.rb"
         end
@@ -158,11 +163,11 @@ namespace :test do
       # environment inherits the bundler environment of `rake`, the environment
       # the process replaced is still bundler environment.
       test_env = ansible_environment
-      vault_password_file = ansible_environment == "virtualbox" ? ".ansible_vault_key_dummy" : ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
+      password_file = vault_password_file
       user = run_as_user
       Bundler.with_clean_env do
         ENV["ANSIBLE_ENVIRONMENT"] = test_env
-        ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
+        ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = password_file
         configure_sudo_password_for(user)
         sh "bundle exec rspec spec/integration/**/*_spec.rb"
       end
