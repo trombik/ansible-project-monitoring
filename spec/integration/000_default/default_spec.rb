@@ -2,6 +2,7 @@
 
 require_relative "../spec_helper"
 require "capybara/rspec"
+require "selenium-webdriver"
 
 admin_user = credentials_yaml["sensu_go_backend_admin_account"]
 admin_pass = credentials_yaml["sensu_go_backend_admin_password"]
@@ -13,8 +14,15 @@ Capybara.configure do |config|
   config.run_server = false
   config.app_host = "http://172.16.100.254:3000"
 end
-Capybara.default_driver = :selenium_chrome_headless
-Capybara.javascript_driver = :selenium_chrome_headless
+
+# see https://docs.travis-ci.com/user/chrome#capybara
+Capybara.register_driver :chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new(args: %w[no-sandbox headless disable-gpu])
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.default_driver = :chrome
+Capybara.javascript_driver = :chrome
 
 case test_environment
 when "virtualbox"
