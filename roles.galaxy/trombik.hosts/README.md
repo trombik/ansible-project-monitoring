@@ -14,6 +14,7 @@ None
 | `hosts_enable_localhost` | if true, create an entry of `localhost` | true |
 | `hosts_enable_ipv6` | if true, create an entry of IPv6 version of `localhost` | true |
 | `hosts_extra_localhosts` | list of extra hostname for `127.0.0.1` when `hosts_enable_localhost` is true | `[]` |
+| `hosts_content` | additional content at the end of hosts file | `""` |
 
 Created by [yaml2readme.rb](https://gist.github.com/trombik/b2df709657c08d845b1d3b3916e592d3)
 
@@ -39,6 +40,8 @@ None
       "192.168.100.2":
         - bar
         - buz
+    hosts_content: |
+      192.168.100.99 foobarbuz
 ```
 
 # License

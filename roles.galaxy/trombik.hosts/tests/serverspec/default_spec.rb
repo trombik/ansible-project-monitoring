@@ -10,6 +10,7 @@ describe file(hosts_file) do
   its(:content) { should match(/192\.168\.100\.2\s+bar\s+buz/) }
   its(:content) { should match(/127\.0\.0\.1\s+#{Regexp.escape(extra_localhosts.join(" "))}\s+localhost$/) }
   its(:content) { should match(/::1\s+ip6-localhost\sip6-loopback/) }
+  its(:content) { should match(/192\.168\.100\.99\s+foobarbuz/) }
 end
 
 describe command("ping -c 1 localhost") do

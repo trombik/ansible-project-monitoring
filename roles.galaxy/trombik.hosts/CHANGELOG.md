@@ -1,3 +1,7 @@
+## Release 2.1.0
+
+* 5c69eeb feature: introduce hosts_content
+
 ## Release 2.0.1
 
 * b313b60 bugfix: QA
