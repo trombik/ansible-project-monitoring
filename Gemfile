@@ -18,4 +18,5 @@ group :development, :test do
   gem "rubocop"
   gem "selenium-webdriver"
   gem "serverspec"
+  gem "webdrivers", "~> 4.0"
 end

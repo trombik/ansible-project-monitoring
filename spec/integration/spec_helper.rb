@@ -3,6 +3,11 @@
 require_relative "../spec_helper"
 require "ansible/vault"
 
+case RUBY_PLATFORM
+when /linux/
+  require "webdrivers"
+end
+
 # XXX `vagrant` command must be called within `with_clean_env`, not only
 # `vagrant` command in this file, but also all other invocations in other
 # places, such as libraries that depend on `vagrant` command, and spec files.
