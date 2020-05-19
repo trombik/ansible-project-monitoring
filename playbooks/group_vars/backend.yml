@@ -219,7 +219,7 @@ sensu_go_backend_checks:
       state: absent
 
 sensu_go_backend_config_fragments:
-  - name: slack.json
+  - name: handler-slack.json
     content:
       slack:
         webhook_url: "https://hooks.slack.com/services/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"
