@@ -22,6 +22,5 @@
     - name: trombik.git
     - name: trombik.language_ruby
     - name: users
-    - name: sensu-plugins-slack
     - name: trombik.sensu_go_backend
     - name: trombik.sensu_go_agent
