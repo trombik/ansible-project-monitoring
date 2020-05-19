@@ -54,6 +54,24 @@
     mode: 0755
     state: directory
 
+- name: Create sensu_go_backend_extra_config_files
+  template:
+    src: extra_config_files.j2
+    dest: "{{ sensu_go_backend_config_dir }}/{{ item['name'] }}"
+    state: "{{ item['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_extra_config_files }}"
+  when:
+    - "not 'state' in item or item['state'] == 'present'"
+
+- name: Delete sensu_go_backend_extra_config_files
+  file:
+    path: "{{ sensu_go_backend_config_dir }}/{{ item['name'] }}"
+    state: absent
+  with_items: "{{ sensu_go_backend_extra_config_files }}"
+  when:
+    - "'state' in item"
+    - "item['state'] == 'absent'"
+
 - name: Create sensu_go_backend_config_fragments
   template:
     src: config_fragments.j2
