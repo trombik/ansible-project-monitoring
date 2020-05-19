@@ -78,6 +78,7 @@ Ruby must be installed.
 | `sensu_go_backend_ruby_plugins` | list of ruby gem plugins to install | `[]` |
 | `sensu_go_backend_config_dir` | path to `sensu/conf.d` | `{{ __sensu_go_backend_config_dir }}` |
 | `sensu_go_backend_config_fragments` | see below | `[]` |
+| `sensu_go_backend_extra_config_files` | see below | `[]` |
 
 ## `sensu_go_backend_assets`
 
@@ -209,6 +210,16 @@ This variable is a list of dict.
 |-----|-------------|------------|
 | `name` | name of the configuration file. Must end with `.json` | yes |
 | `content` | content of the file in YAML format | no |
+| `state` | state of the file, either `present` or `absent` | no |
+
+## `sensu_go_backend_extra_config_files`
+
+This variable is a list of dict.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `name` | name of extra configuration file. | yes |
+| `content` | content of the file | no |
 | `state` | state of the file, either `present` or `absent` | no |
 
 ## `sensu_go_backend_flags`
