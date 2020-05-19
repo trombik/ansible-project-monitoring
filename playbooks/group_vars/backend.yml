@@ -227,11 +227,13 @@ sensu_go_backend_config_fragments:
         message_template: "{{ sensu_go_backend_config_dir }}/handler-slack-message-template.erb"
         icon_emoji: ":snowman:"
 
-project_sensu_plugins_slack_message_template: |
-  ---
-  Output: <%= @event["check"]["output"] %>
-  Alert-Time: <%= Time.at(@event["check"]["issued"])  %>
-  URL: http://172.16.100.254:3000/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>
+sensu_go_backend_extra_config_files:
+  - name: handler-slack-message-template.erb
+    content: |
+      ---
+      Output: <%= @event["check"]["output"] %>
+      Alert-Time: <%= Time.at(@event["check"]["issued"])  %>
+      URL: http://172.16.100.254:3000/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>
 
 sensu_go_backend_pipe_handlers:
   - pipe_handler:
