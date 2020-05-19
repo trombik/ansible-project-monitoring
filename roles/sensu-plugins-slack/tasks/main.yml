@@ -1,0 +1,7 @@
+---
+
+- name: Create message_template
+  template:
+    src: handler-slack-message-template.erb.j2
+    # XXX at this point, sensu_go_backend_config_dir is not defined
+    dest: "/usr/local/etc/sensu/handler-slack-message-template.erb"
