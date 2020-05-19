@@ -13,6 +13,7 @@ sensu_go_agent_config:
 os_sensu_go_backend_extra_packages:
   FreeBSD:
     - sysutils/sensu-go-cli
+    - sysutils/rubygem-sensu-plugin
     - net-mgmt/nagios-plugins
     # for nagios/check_ssl_validity
     - security/p5-Crypt-X509
@@ -24,6 +25,9 @@ os_sensu_go_backend_extra_packages:
   RedHat:
     - sensu-go-cli
 sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
+sensu_go_backend_ruby_plugins:
+  - sensu-plugins-slack
+
 sensu_go_backend_admin_account: admin
 sensu_go_backend_admin_password: P@ssw0rd!
 sensu_go_backend_config:
@@ -137,6 +141,9 @@ sensu_go_backend_checks:
       subscriptions:
         - system
       state: present
+      handlers:
+        - slack
+
   - check:
       name: proxy_check_ssl_validity
       command: "/usr/local/libexec/nagios/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
@@ -150,6 +157,9 @@ sensu_go_backend_checks:
           - "entity.entity_class == 'proxy'"
           - "entity.labels.proxy_type == 'ssl_validity'"
       state: present
+      handlers:
+        - slack
+
   - check:
       name: proxy_check_http
       command: "/usr/local/libexec/nagios/check_http -H {% raw %}{{ .system.hostname }}{% endraw %}"
@@ -163,6 +173,8 @@ sensu_go_backend_checks:
           - "entity.entity_class == 'proxy'"
           - "entity.labels.proxy_type == 'http'"
       state: present
+      handlers:
+        - slack
 
   - check:
       name: proxy_check_dig
@@ -177,6 +189,8 @@ sensu_go_backend_checks:
           - "entity.entity_class == 'proxy'"
           - "entity.labels.proxy_type == 'dig'"
       state: present
+      handlers:
+        - slack
 
   - check:
       name: check_swap
@@ -187,6 +201,8 @@ sensu_go_backend_checks:
       ttl: 600
       subscriptions:
         - system
+      handlers:
+        - slack
   - check:
       name: check_load
       command: "{% raw %}{{ .labels.nagios_plugin_dir }}{% endraw %}/check_load -w 1,2,3 -c 2,3,4"
@@ -196,9 +212,34 @@ sensu_go_backend_checks:
       ttl: 600
       subscriptions:
         - system
+      handlers:
+        - slack
   - check:
       name: uptime-check
       state: absent
+
+sensu_go_backend_config_fragments:
+  - name: slack.json
+    content:
+      slack:
+        webhook_url: "https://hooks.slack.com/services/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"
+        bot_name: slack-plugin
+        message_template: "{{ sensu_go_backend_config_dir }}/handler-slack-message-template.erb"
+        icon_emoji: ":snowman:"
+
+project_sensu_plugins_slack_message_template: |
+  ---
+  Output: <%= @event["check"]["output"] %>
+  Alert-Time: <%= Time.at(@event["check"]["issued"])  %>
+  URL: http://172.16.100.254:3000/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>
+
+sensu_go_backend_pipe_handlers:
+  - pipe_handler:
+      name: slack
+      command: "/home/sensu/.gem/ruby/2.6/bin/handler-slack.rb --json slack --map-go-event-into-ruby"
+      filters:
+        - is_incident
+        - not_silenced
 
 sensu_go_backend_roles:
   - role:
