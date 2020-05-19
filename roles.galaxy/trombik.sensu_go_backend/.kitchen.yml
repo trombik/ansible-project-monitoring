@@ -51,6 +51,3 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
-    # ignore freebsd because the packages are available only in our internal
-    # network
-    excludes: <%= ENV["CI"] ? "[ 'freebsd-12.1-amd64' ]" : "[]" %>

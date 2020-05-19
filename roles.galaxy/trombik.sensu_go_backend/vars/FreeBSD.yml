@@ -8,3 +8,4 @@ __sensu_go_backend_cache_dir: /var/cache/sensu/sensu-backend
 __sensu_go_backend_service: sensu-backend
 __sensu_go_backend_conf_dir: /usr/local/etc
 __sensu_go_backend_conf_file: "{{ __sensu_go_backend_conf_dir }}/sensu-backend.yml"
+__sensu_go_backend_config_dir: /usr/local/etc/sensu/conf.d

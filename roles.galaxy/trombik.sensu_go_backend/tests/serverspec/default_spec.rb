@@ -237,3 +237,28 @@ gems.each do |g|
     end
   end
 end
+
+conf_dir = case os[:family]
+           when "freebsd"
+             "/usr/local/etc/sensu/conf.d"
+           else
+             "/etc/sensu/conf.d"
+           end
+describe file conf_dir do
+  it { should exist }
+  it { should be_directory }
+  it { should be_mode 755 }
+  it { should be_owned_by "root" }
+  it { should be_grouped_into default_group }
+end
+
+fragments = %w[foo.json bar.json]
+fragments.each do |f|
+  describe file "#{conf_dir}/#{f}" do
+    it { should exist }
+    it { should be_file }
+    it { should be_owned_by "root" }
+    it { should be_grouped_into default_group }
+    its(:content_as_json) { should include("example" => include("name" => "#{f.split(".").first}")) }
+  end
+end

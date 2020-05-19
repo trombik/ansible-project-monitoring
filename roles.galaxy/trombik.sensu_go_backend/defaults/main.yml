@@ -36,5 +36,7 @@ sensu_go_backend_use_embedded_ruby: no
 sensu_go_backend_embedded_ruby_dir: /opt/sensu-plugins-ruby/embedded
 sensu_go_backend_embedded_ruby_gem: "{{ sensu_go_backend_embedded_ruby_dir }}/bin/gem"
 sensu_go_backend_ruby_plugins: []
+sensu_go_backend_config_dir: "{{ __sensu_go_backend_config_dir }}"
+sensu_go_backend_config_fragments: []
 
 sensu_go_backend_users_ignore_changed: no

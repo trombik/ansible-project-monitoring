@@ -28,6 +28,17 @@
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_config_fragments:
+      - name: foo.json
+        content:
+          example:
+            name: foo
+      - name: bar.json
+        content:
+          example:
+            name: bar
+      - name: buz.json
+        state: absent
     os_sensu_go_backend_use_embedded_ruby:
       FreeBSD: no
       Debian: no

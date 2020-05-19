@@ -44,8 +44,17 @@ before_install:
   - wget https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
   - sudo dpkg -i vagrant_2.2.9_x86_64.deb
   - vagrant --version
+
+  # for libvirt
   - vagrant plugin install vagrant-libvirt
   - sudo chmod go+rw /var/run/libvirt/libvirt-sock
+
+  # for virtualbox
+  - sudo apt-get install "linux-headers-`uname -r`"
+  - wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O - | sudo apt-key add -
+  - sudo add-apt-repository -y "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian `lsb_release -cs` contrib"
+  - sudo apt-get update
+  - sudo apt-get install virtualbox-6.1
 
 install:
   # Install ansible
@@ -107,7 +116,7 @@ script:
 
   # run the QA test
   #  - qansible qa
-  - export VAGRANT_PROVIDER=libvirt
+  - export VAGRANT_PROVIDER=virtualbox
   - bundle exec kitchen list
   - |
     platforms=`bundle exec kitchen list --json  | jq ".[] | select(.instance | match(\"${PLATFORM}\")).instance" | tr -d '"'`

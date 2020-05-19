@@ -48,6 +48,30 @@
     state: directory
   notify: Restart sensu_go_backend
 
+- name: Create sensu_go_backend_config_dir
+  file:
+    path: "{{ sensu_go_backend_config_dir }}"
+    mode: 0755
+    state: directory
+
+- name: Create sensu_go_backend_config_fragments
+  template:
+    src: config_fragments.j2
+    dest: "{{ sensu_go_backend_config_dir }}/{{ item['name'] }}"
+    state: "{{ item['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_config_fragments }}"
+  when:
+    - "not 'state' in item or item['state'] == 'present'"
+
+- name: Delete sensu_go_backend_config_fragments
+  file:
+    path: "{{ sensu_go_backend_config_dir }}/{{ item['name'] }}"
+    state: absent
+  with_items: "{{ sensu_go_backend_config_fragments }}"
+  when:
+    - "'state' in item"
+    - "item['state'] == 'absent'"
+
 - name: Create sensu_go_backend_conf_file
   template:
     src: sensu-backend.yml.j2

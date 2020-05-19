@@ -76,6 +76,8 @@ Ruby must be installed.
 | `sensu_go_backend_embedded_ruby_dir` | path to embedded ruby directory | `/opt/sensu-plugins-ruby/embedded` |
 | `sensu_go_backend_embedded_ruby_gem` | path to embedded ruby gem | `{{ sensu_go_backend_embedded_ruby_dir }}/bin/gem` |
 | `sensu_go_backend_ruby_plugins` | list of ruby gem plugins to install | `[]` |
+| `sensu_go_backend_config_dir` | path to `sensu/conf.d` | `{{ __sensu_go_backend_config_dir }}` |
+| `sensu_go_backend_config_fragments` | see below | `[]` |
 
 ## `sensu_go_backend_assets`
 
@@ -199,6 +201,16 @@ This is a list of dict. The dict requires the following keys and values.
 |-----|-------------|------------|
 | `cluster_role_binding` | a dict of arguments passed to `cluster_role_binding` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
 
+## `sensu_go_backend_config_fragments`
+
+This variable is a list of dict.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `name` | name of the configuration file. Must end with `.json` | yes |
+| `content` | content of the file in YAML format | no |
+| `state` | state of the file, either `present` or `absent` | no |
+
 ## `sensu_go_backend_flags`
 
 This variable is used to configure startup options for the service. What it
@@ -229,6 +241,7 @@ does depends on platform.
 | `__sensu_go_backend_service` | `sensu-backend` |
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
+| `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
 
 ## FreeBSD
 
@@ -243,6 +256,7 @@ does depends on platform.
 | `__sensu_go_backend_service` | `sensu-backend` |
 | `__sensu_go_backend_conf_dir` | `/usr/local/etc` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/sensu-backend.yml` |
+| `__sensu_go_backend_config_dir` | `/usr/local/etc/sensu/conf.d` |
 
 ## RedHat
 
@@ -257,6 +271,7 @@ does depends on platform.
 | `__sensu_go_backend_service` | `sensu-backend` |
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
+| `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
 
 # Dependencies
 
@@ -274,6 +289,8 @@ does depends on platform.
       when: ansible_os_family == 'Debian'
     - role: trombik.redhat_repo
       when: ansible_os_family == 'RedHat'
+    - role: trombik.language_ruby
+      when: ansible_os_family != 'RedHat'
 
     - role: trombik.sensu_go_agent
     - role: ansible-role-sensu_go_backend
@@ -293,10 +310,32 @@ does depends on platform.
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_config_fragments:
+      - name: foo.json
+        content:
+          example:
+            name: foo
+      - name: bar.json
+        content:
+          example:
+            name: bar
+      - name: buz.json
+        state: absent
+    os_sensu_go_backend_use_embedded_ruby:
+      FreeBSD: no
+      Debian: no
+      RedHat: yes
+    sensu_go_backend_use_embedded_ruby: "{{ os_sensu_go_backend_use_embedded_ruby[ansible_os_family] }}"
+    sensu_go_backend_ruby_plugins:
+      - sensu-handlers-elasticsearch
     os_sensu_go_backend_extra_packages:
-      FreeBSD: sysutils/sensu-go-cli
-      Debian: sensu-go-cli
-      RedHat: sensu-go-cli
+      FreeBSD:
+        - sysutils/sensu-go-cli
+      Debian:
+        - sensu-go-cli
+      RedHat:
+        - sensu-go-cli
+        - sensu-plugins-ruby
     sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
     sensu_go_backend_admin_account: admin
     sensu_go_backend_admin_password: P@ssw0rd!
@@ -312,7 +351,8 @@ does depends on platform.
     os_sensu_go_backend_flags:
       FreeBSD: ""
       Debian: ""
-      RedHat: ""
+      RedHat: |
+        EMBEDDED_RUBY=true
     sensu_go_backend_flags: "{{ os_sensu_go_backend_flags[ansible_os_family] }}"
 
     sensu_go_backend_namespaces:
@@ -507,6 +547,12 @@ does depends on platform.
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
         gpgcheck: yes
+        enabled: yes
+      sensu_community:
+        baseurl: https://packagecloud.io/sensu/community/el/{{ ansible_distribution_major_version }}/$basearch
+        gpgkey: https://packagecloud.io/sensu/community/gpgkey
+        repo_gpgcheck: yes
+        gpgcheck: no
         enabled: yes
 ```
 

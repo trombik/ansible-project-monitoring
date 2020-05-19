@@ -1,3 +1,9 @@
+## Release 1.3.0
+
+* 576010f bugfix: get FreeBSD back to the build
+* e059aab bugfix: switch to virtualbox
+* ee6d408 feature: support ruby gem plugins
+
 ## Release 1.2.1
 
 * 3b548ba bugfix: wait_for the backend
