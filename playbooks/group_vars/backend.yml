@@ -222,7 +222,7 @@ sensu_go_backend_config_fragments:
   - name: handler-slack.json
     content:
       slack:
-        webhook_url: "https://hooks.slack.com/services/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"
+        webhook_url: "https://hooks.slack.com/services/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"
         bot_name: slack-plugin
         message_template: "{{ sensu_go_backend_config_dir }}/handler-slack-message-template.erb"
         icon_emoji: ":snowman:"
@@ -234,6 +234,12 @@ sensu_go_backend_extra_config_files:
       Output: <%= @event["check"]["output"] %>
       Alert-Time: <%= Time.at(@event["check"]["issued"])  %>
       URL: http://172.16.100.254:3000/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>
+
+sensu_go_backend_handler_sets:
+  - handler_set:
+      name: keepalive
+      handlers:
+        - slack
 
 sensu_go_backend_pipe_handlers:
   - pipe_handler:
