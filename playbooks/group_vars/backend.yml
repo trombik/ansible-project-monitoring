@@ -222,7 +222,7 @@ sensu_go_backend_config_fragments:
   - name: handler-slack.json
     content:
       slack:
-        webhook_url: "https://hooks.slack.com/services/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"
+        webhook_url: "{{ project_slack_webhook_url }}"
         bot_name: slack-plugin
         message_template: "{{ sensu_go_backend_config_dir }}/handler-slack-message-template.erb"
         icon_emoji: ":snowman:"
