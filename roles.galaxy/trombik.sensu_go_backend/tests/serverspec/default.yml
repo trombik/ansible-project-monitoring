@@ -28,6 +28,13 @@
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_handler_sets:
+      - handler_set:
+          name: keepalive
+          handlers:
+            - "dev-null"
+          namespace: server
+
     sensu_go_backend_extra_config_files:
       - name: template_file.erb
         content: |

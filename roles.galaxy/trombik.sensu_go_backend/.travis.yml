@@ -51,7 +51,7 @@ before_install:
 
   # for virtualbox
   - sudo apt-get install "linux-headers-`uname -r`"
-  - wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O - | sudo apt-key add -
+  - wget -q https://github.com/trombik/ansible-role-sensu_go_backend/releases/download/1.4.0/oracle_vbox_2016.asc -O - | sudo apt-key add -
   - sudo add-apt-repository -y "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian `lsb_release -cs` contrib"
   - sudo apt-get update
   - sudo apt-get install virtualbox-6.1

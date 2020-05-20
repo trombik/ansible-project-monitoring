@@ -157,6 +157,17 @@
     users: "{{ item['cluster_role_binding']['users'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_cluster_role_bindings }}"
 
+- name: Configure sensu_go_backend_handler_sets
+  sensu.sensu_go.handler_set:
+    annotations: "{{ item['handler_set']['annotations'] | default(omit) }}"
+    auth: "{{ item['handler_set']['auth'] | default(omit) }}"
+    handlers: "{{ item['handler_set']['handlers'] | default(omit) }}"
+    labels: "{{ item['handler_set']['labels'] | default(omit) }}"
+    name: "{{ item['handler_set']['name'] }}"
+    namespace: "{{ item['handler_set']['namespace'] | default(omit) }}"
+    state: "{{ item['handler_set']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_handler_sets }}"
+
 - name: Configure sensu_go_backend_users
   sensu.sensu_go.user:
     auth: "{{ item['user']['auth'] | default(omit) }}"

@@ -1,3 +1,9 @@
+## Release 1.4.0
+
+* 4a3cd65 feature: introduce sensu_go_backend_extra_config_files
+* e3a0453 bugfix: lint
+* 0638861 feature: support configuration fragments
+
 ## Release 1.3.0
 
 * 576010f bugfix: get FreeBSD back to the build
