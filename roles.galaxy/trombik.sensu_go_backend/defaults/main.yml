@@ -32,6 +32,7 @@ sensu_go_backend_filters: []
 sensu_go_backend_entities: []
 sensu_go_backend_cluster_roles: []
 sensu_go_backend_cluster_role_bindings: []
+sensu_go_backend_handler_sets: []
 sensu_go_backend_use_embedded_ruby: no
 sensu_go_backend_embedded_ruby_dir: /opt/sensu-plugins-ruby/embedded
 sensu_go_backend_embedded_ruby_gem: "{{ sensu_go_backend_embedded_ruby_dir }}/bin/gem"

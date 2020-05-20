@@ -72,6 +72,7 @@ Ruby must be installed.
 | `sensu_go_backend_entities` | list of `sensu-go` `entity` (see below) | `[]` |
 | `sensu_go_backend_cluster_roles` | list of `sensu-go` `cluster_role` (see below) | `[]` |
 | `sensu_go_backend_cluster_role_bindings` | list of `sensu-go` `cluster_role_binding` (see below) | `[]` |
+| `sensu_go_backend_handler_sets` | list of `sensu-go` `handler_sets` (see below) | `[]` |
 | `sensu_go_backend_use_embedded_ruby` | if true, install `sensu_go_backend_ruby_plugins` with embedded ruby | `no` |
 | `sensu_go_backend_embedded_ruby_dir` | path to embedded ruby directory | `/opt/sensu-plugins-ruby/embedded` |
 | `sensu_go_backend_embedded_ruby_gem` | path to embedded ruby gem | `{{ sensu_go_backend_embedded_ruby_dir }}/bin/gem` |
@@ -202,6 +203,14 @@ This is a list of dict. The dict requires the following keys and values.
 |-----|-------------|------------|
 | `cluster_role_binding` | a dict of arguments passed to `cluster_role_binding` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
 
+## `sensu_go_backend_handler_sets`
+
+This is a list of dict. The dict requires the following keys and values.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `handler_set` | a dict of arguments passed to `handler_set` module in [`sensu-go` `ansible` collection](https://sensu.github.io/sensu-go-ansible/). | yes |
+
 ## `sensu_go_backend_config_fragments`
 
 This variable is a list of dict.
@@ -321,6 +330,19 @@ does depends on platform.
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_handler_sets:
+      - handler_set:
+          name: keepalive
+          handlers:
+            - "dev-null"
+          namespace: server
+
+    sensu_go_backend_extra_config_files:
+      - name: template_file.erb
+        content: |
+          foo
+      - name: does_not_exist.txt
+        state: absent
     sensu_go_backend_config_fragments:
       - name: foo.json
         content:
