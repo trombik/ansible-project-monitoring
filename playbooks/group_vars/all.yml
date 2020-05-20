@@ -29,6 +29,9 @@ sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 sensu_go_agent_ruby_plugins:
   - sensu-plugin
   - sensu-plugins-disk-checks
+
+project_sensu_go_agent_keepalive_warning_timeout: 120
+project_sensu_go_agent_keepalive_critical_timeout: 300
 # __________________________________________packege
 freebsd_pkg_repo:
 
