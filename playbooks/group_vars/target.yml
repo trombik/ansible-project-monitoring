@@ -1,5 +1,18 @@
 ---
 
+# __________________________________________________sudo
+sudo_sudoer: |
+  root ALL=(ALL) ALL
+  #includedir {{ sudo_confd_dir }}
+
+project_sudo_configs:
+  - name: wheel
+    content: |
+      %wheel ALL=(ALL) ALL
+      %sudo  ALL=(ALL) ALL
+
+sudo_configs: "{{ project_sudo_configs + project_sudo_configs_local }}"
+
 # __________________________________________________sensu_agent
 os_sensu_go_agent_extra_packages:
   FreeBSD:
