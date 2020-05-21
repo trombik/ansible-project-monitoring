@@ -117,18 +117,16 @@
     state: "{{ item['namespace']['state'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_namespaces }}"
 
-- name: Configure sensu_go_backend_filters
-  sensu.sensu_go.filter:
-    action: "{{ item['filter']['action'] | default(omit) }}"
-    annotations: "{{ item['filter']['annotations'] | default(omit) }}"
-    auth: "{{ item['filter']['auth'] | default(omit) }}"
-    expressions: "{{ item['filter']['expressions'] | default(omit) }}"
-    labels: "{{ item['filter']['labels'] | default(omit) }}"
-    name: "{{ item['filter']['name'] }}"
-    namespace: "{{ item['filter']['namespace'] | default(omit) }}"
-    runtime_assets: "{{ item['filter']['runtime_assets'] | default(omit) }}"
-    state: "{{ item['filter']['state'] | default(omit) }}"
-  with_items: "{{ sensu_go_backend_filters }}"
+- name: Configure sensu_go_backend_users
+  sensu.sensu_go.user:
+    auth: "{{ item['user']['auth'] | default(omit) }}"
+    groups: "{{ item['user']['group'] | default(omit) }}"
+    name: "{{ item['user']['name'] }}"
+    password: "{{ item['user']['password'] | default(omit) }}"
+    state: "{{ item['user']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_users }}"
+  register: __sensu_go_backend_users_result
+  changed_when: __sensu_go_backend_users_result['changed'] and not sensu_go_backend_users_ignore_changed
 
 - name: Configure sensu_go_backend_roles
   sensu.sensu_go.role:
@@ -157,28 +155,6 @@
     users: "{{ item['cluster_role_binding']['users'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_cluster_role_bindings }}"
 
-- name: Configure sensu_go_backend_handler_sets
-  sensu.sensu_go.handler_set:
-    annotations: "{{ item['handler_set']['annotations'] | default(omit) }}"
-    auth: "{{ item['handler_set']['auth'] | default(omit) }}"
-    handlers: "{{ item['handler_set']['handlers'] | default(omit) }}"
-    labels: "{{ item['handler_set']['labels'] | default(omit) }}"
-    name: "{{ item['handler_set']['name'] }}"
-    namespace: "{{ item['handler_set']['namespace'] | default(omit) }}"
-    state: "{{ item['handler_set']['state'] | default(omit) }}"
-  with_items: "{{ sensu_go_backend_handler_sets }}"
-
-- name: Configure sensu_go_backend_users
-  sensu.sensu_go.user:
-    auth: "{{ item['user']['auth'] | default(omit) }}"
-    groups: "{{ item['user']['group'] | default(omit) }}"
-    name: "{{ item['user']['name'] }}"
-    password: "{{ item['user']['password'] | default(omit) }}"
-    state: "{{ item['user']['state'] | default(omit) }}"
-  with_items: "{{ sensu_go_backend_users }}"
-  register: __sensu_go_backend_users_result
-  changed_when: __sensu_go_backend_users_result['changed'] and not sensu_go_backend_users_ignore_changed
-
 - name: Configure sensu_go_backend_role_bindings
   sensu.sensu_go.role_binding:
     auth: "{{ item['role_binding']['auth'] | default(omit) }}"
@@ -202,35 +178,6 @@
     state: "{{ item['asset']['state'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_assets }}"
 
-- name: Configure sensu_go_backend_checks
-  sensu.sensu_go.check:
-    annotations: "{{ item['check']['annotations'] | default(omit) }}"
-    auth: "{{ item['check']['auth'] | default(omit) }}"
-    check_hooks: "{{ item['check']['check_hooks'] | default(omit) }}"
-    command: "{{ item['check']['command'] | default(omit) }}"
-    cron: "{{ item['check']['cron'] | default(omit) }}"
-    env_vars: "{{ item['check']['env_vars'] | default(omit) }}"
-    handlers: "{{ item['check']['handlers'] | default(omit) }}"
-    high_flap_threshold: "{{ item['check']['high_flap_threshold'] | default(omit) }}"
-    interval: "{{ item['check']['interval'] | default(omit) }}"
-    labels: "{{ item['check']['labels'] | default(omit) }}"
-    low_flap_threshold: "{{ item['check']['low_flap_threshold'] | default(omit) }}"
-    name: "{{ item['check']['name'] }}"
-    namespace: "{{ item['check']['namespace'] | default(omit) }}"
-    output_metric_format: "{{ item['check']['output_metric_format'] | default(omit) }}"
-    output_metric_handlers: "{{ item['check']['output_metric_handlers'] | default(omit) }}"
-    proxy_entity_name: "{{ item['check']['proxy_entity_name'] | default(omit) }}"
-    proxy_requests: "{{ item['check']['proxy_requests'] | default(omit) }}"
-    publish: "{{ item['check']['publish'] | default(omit) }}"
-    round_robin: "{{ item['check']['round_robin'] | default(omit) }}"
-    runtime_assets: "{{ item['check']['runtime_assets'] | default(omit) }}"
-    state: "{{ item['check']['state'] | default(omit) }}"
-    stdin: "{{ item['check']['stdin'] | default(omit) }}"
-    subscriptions: "{{ item['check']['subscriptions'] | default(omit) }}"
-    timeout: "{{ item['check']['timeout'] | default(omit) }}"
-    ttl: "{{ item['check']['ttl'] | default(omit) }}"
-  with_items: "{{ sensu_go_backend_checks }}"
-
 - name: Configure sensu_go_backend_bonsai_assets
   sensu.sensu_go.bonsai_asset:
     annotations: "{{ item['bonsai_asset']['annotations'] | default(omit) }}"
@@ -241,6 +188,33 @@
     rename: "{{ item['bonsai_asset']['rename'] | default(omit) }}"
     version: "{{ item['bonsai_asset']['version'] }}"
   with_items: "{{ sensu_go_backend_bonsai_assets }}"
+
+- name: Configure sensu_go_backend_mutators
+  sensu.sensu_go.mutator:
+    annotations: "{{ item['mutator']['annotations'] | default(omit) }}"
+    auth: "{{ item['mutator']['auth'] | default(omit) }}"
+    command: "{{ item['mutator']['command'] | default(omit) }}"
+    env_vars: "{{ item['mutator']['env_vars'] | default(omit) }}"
+    labels: "{{ item['mutator']['labels'] | default(omit) }}"
+    name: "{{ item['mutator']['name'] }}"
+    namespace: "{{ item['mutator']['namespace'] | default(omit) }}"
+    runtime_assets: "{{ item['mutator']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['mutator']['state'] | default(omit) }}"
+    timeout: "{{ item['mutator']['timeout'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_mutators }}"
+
+- name: Configure sensu_go_backend_filters
+  sensu.sensu_go.filter:
+    action: "{{ item['filter']['action'] | default(omit) }}"
+    annotations: "{{ item['filter']['annotations'] | default(omit) }}"
+    auth: "{{ item['filter']['auth'] | default(omit) }}"
+    expressions: "{{ item['filter']['expressions'] | default(omit) }}"
+    labels: "{{ item['filter']['labels'] | default(omit) }}"
+    name: "{{ item['filter']['name'] }}"
+    namespace: "{{ item['filter']['namespace'] | default(omit) }}"
+    runtime_assets: "{{ item['filter']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['filter']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_filters }}"
 
 - name: Configure sensu_go_backend_pipe_handlers
   sensu.sensu_go.pipe_handler:
@@ -273,11 +247,16 @@
     type: "{{ item['socket_handler']['type'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_socket_handlers }}"
 
-- name: Configure sensu_go_backend_tessen
-  sensu.sensu_go.tessen:
-    auth: "{{ item['tessen']['auth'] | default(omit) }}"
-    state: "{{ item['tessen']['state'] }}"
-  with_items: "{{ sensu_go_backend_tessen }}"
+- name: Configure sensu_go_backend_handler_sets
+  sensu.sensu_go.handler_set:
+    annotations: "{{ item['handler_set']['annotations'] | default(omit) }}"
+    auth: "{{ item['handler_set']['auth'] | default(omit) }}"
+    handlers: "{{ item['handler_set']['handlers'] | default(omit) }}"
+    labels: "{{ item['handler_set']['labels'] | default(omit) }}"
+    name: "{{ item['handler_set']['name'] }}"
+    namespace: "{{ item['handler_set']['namespace'] | default(omit) }}"
+    state: "{{ item['handler_set']['state'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_handler_sets }}"
 
 - name: Configure sensu_go_backend_hooks
   sensu.sensu_go.hook:
@@ -310,3 +289,38 @@
     system: "{{ item['entity']['system'] | default(omit) }}"
     user: "{{ item['entity']['user'] | default(omit) }}"
   with_items: "{{ sensu_go_backend_entities }}"
+
+- name: Configure sensu_go_backend_checks
+  sensu.sensu_go.check:
+    annotations: "{{ item['check']['annotations'] | default(omit) }}"
+    auth: "{{ item['check']['auth'] | default(omit) }}"
+    check_hooks: "{{ item['check']['check_hooks'] | default(omit) }}"
+    command: "{{ item['check']['command'] | default(omit) }}"
+    cron: "{{ item['check']['cron'] | default(omit) }}"
+    env_vars: "{{ item['check']['env_vars'] | default(omit) }}"
+    handlers: "{{ item['check']['handlers'] | default(omit) }}"
+    high_flap_threshold: "{{ item['check']['high_flap_threshold'] | default(omit) }}"
+    interval: "{{ item['check']['interval'] | default(omit) }}"
+    labels: "{{ item['check']['labels'] | default(omit) }}"
+    low_flap_threshold: "{{ item['check']['low_flap_threshold'] | default(omit) }}"
+    name: "{{ item['check']['name'] }}"
+    namespace: "{{ item['check']['namespace'] | default(omit) }}"
+    output_metric_format: "{{ item['check']['output_metric_format'] | default(omit) }}"
+    output_metric_handlers: "{{ item['check']['output_metric_handlers'] | default(omit) }}"
+    proxy_entity_name: "{{ item['check']['proxy_entity_name'] | default(omit) }}"
+    proxy_requests: "{{ item['check']['proxy_requests'] | default(omit) }}"
+    publish: "{{ item['check']['publish'] | default(omit) }}"
+    round_robin: "{{ item['check']['round_robin'] | default(omit) }}"
+    runtime_assets: "{{ item['check']['runtime_assets'] | default(omit) }}"
+    state: "{{ item['check']['state'] | default(omit) }}"
+    stdin: "{{ item['check']['stdin'] | default(omit) }}"
+    subscriptions: "{{ item['check']['subscriptions'] | default(omit) }}"
+    timeout: "{{ item['check']['timeout'] | default(omit) }}"
+    ttl: "{{ item['check']['ttl'] | default(omit) }}"
+  with_items: "{{ sensu_go_backend_checks }}"
+
+- name: Configure sensu_go_backend_tessen
+  sensu.sensu_go.tessen:
+    auth: "{{ item['tessen']['auth'] | default(omit) }}"
+    state: "{{ item['tessen']['state'] }}"
+  with_items: "{{ sensu_go_backend_tessen }}"

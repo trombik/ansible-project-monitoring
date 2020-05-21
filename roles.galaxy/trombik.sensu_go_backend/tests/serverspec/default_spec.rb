@@ -219,6 +219,12 @@ describe command "sensuctl cluster-role-binding list --format json" do
   its(:stdout_as_json) { should include(include("metadata" => include("name" => "cluster-wide-readonly"))) }
 end
 
+describe command "sensuctl mutator list --format json" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout_as_json) { should include(include("metadata" => include("name" => "cat"))) }
+end
+
 gems.each do |g|
   case os[:family]
   when "redhat"
