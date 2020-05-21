@@ -22,3 +22,4 @@
     - name: users
     - name: trombik.nginx
     - name: trombik.sensu_go_agent
+    - name: trombik.monit

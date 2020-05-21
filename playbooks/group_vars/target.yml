@@ -61,3 +61,27 @@ nginx_config: |
       }
     }
   }
+
+# __________________________________________________monit
+
+monit_config: |
+  set daemon 10
+  set httpd port 2812
+    use address 127.0.0.1
+    allow 127.0.0.1
+  set logfile syslog facility log_daemon
+
+project_service_command:
+  nginx:
+    start: "/usr/sbin/service nginx start"
+    stop: "/usr/sbin/service nginx stop"
+
+monit_rc:
+  nginx:
+    state: present
+    content: |
+      check process nginx with pidfile /var/run/nginx.pid
+        start program "{{ project_service_command['nginx']['start'] }}"
+        stop program "{{ project_service_command['nginx']['stop'] }}"
+        every 2 cycles
+        if failed port 80 protocol http then restart
