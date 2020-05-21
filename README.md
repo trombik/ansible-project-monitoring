@@ -85,3 +85,4 @@ The administrator account is `admin`, the password is `P@ssw0rd!`.
 An example subject of monitoring. It has the following services enabled:
 
 * `sensu-agent`
+* `nginx`
