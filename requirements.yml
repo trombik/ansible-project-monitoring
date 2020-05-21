@@ -15,6 +15,7 @@ roles:
   - name: trombik.tmux
   - name: trombik.language_ruby
   - name: trombik.nginx
+  - name: trombik.monit
 
 collections:
   - name: sensu.sensu_go
