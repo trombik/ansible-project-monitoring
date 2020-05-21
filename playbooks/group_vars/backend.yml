@@ -180,6 +180,7 @@ sensu_go_backend_checks:
       check_hooks:
         critical:
           - process_tree
+          - dmesg
 
   - check:
       name: proxy_check_http
@@ -274,6 +275,10 @@ sensu_go_backend_hooks:
   - hook:
       name: process_tree
       command: ps auxww
+      timeout: 10
+  - hook:
+      name: dmesg
+      command: 'sh -c "dmesg | tail"'
       timeout: 10
 
 sensu_go_backend_roles:
