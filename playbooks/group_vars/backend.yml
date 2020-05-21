@@ -1,13 +1,14 @@
 ---
 
 # __________________________________________agent
+project_agent_extra_label: {}
 sensu_go_agent_config:
   backend-url: "{{ project_backend_url }}"
   cache-dir: "{{ sensu_go_agent_cache_dir }}"
   subscriptions:
     - system
     - proxy
-  labels: "{{ project_agent_label }}"
+  labels: "{{ project_agent_label | combine(project_agent_extra_label, recursive=True) }}"
   keepalive-warning-timeout: "{{ project_sensu_go_agent_keepalive_warning_timeout }}"
   keepalive-critical-timeout: "{{ project_sensu_go_agent_keepalive_critical_timeout }}"
 
@@ -158,6 +159,21 @@ sensu_go_backend_checks:
         entity_attributes:
           - "entity.entity_class == 'proxy'"
           - "entity.labels.proxy_type == 'ssl_validity'"
+      state: present
+      handlers:
+        - slack
+
+  - check:
+      name: check_http
+      # XXX when using nested label, you need to use:
+      #
+      # `index .lables # 'nested,key'`
+      command: '{% raw %}{{ .labels.nagios_plugin_dir }}/check_http{% endraw %} -H {% raw %}{{ index .labels "nginx_hostname" }}{% endraw %}'
+      output_metric_format: nagios_perfdata
+      interval: 60
+      publish: true
+      subscriptions:
+        - web_server
       state: present
       handlers:
         - slack
