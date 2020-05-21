@@ -177,6 +177,9 @@ sensu_go_backend_checks:
       state: present
       handlers:
         - slack
+      check_hooks:
+        critical:
+          - process_tree
 
   - check:
       name: proxy_check_http
@@ -266,6 +269,12 @@ sensu_go_backend_pipe_handlers:
       filters:
         - is_incident
         - not_silenced
+
+sensu_go_backend_hooks:
+  - hook:
+      name: process_tree
+      command: ps auxww
+      timeout: 10
 
 sensu_go_backend_roles:
   - role:
