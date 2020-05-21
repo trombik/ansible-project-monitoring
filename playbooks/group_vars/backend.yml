@@ -284,6 +284,7 @@ sensu_go_backend_hooks:
   - hook:
       name: syslog
       command: 'sh -c "grep nginx /var/log/messages | tail -n 50"'
+      timeout: 10
 
 sensu_go_backend_roles:
   - role:
