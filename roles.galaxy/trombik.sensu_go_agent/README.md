@@ -7,7 +7,8 @@
 ## Notes for FreeBSD users
 
 As of this writing (2020/04/16), the official FreeBSD ports tree does not have
-the latest version of `sensu-go`. The available version of the port does not
+the latest version of `sensu-go`. [The available version of the
+port](https://www.freshports.org/sysutils/sensu-go/) does not
 install `sensu-backend`. You have to fix the port yourself, or install my port
 from
 `[freebsd-ports-sensu-go](https://github.com/trombik/freebsd-ports-sensu-go)`,
@@ -23,6 +24,7 @@ Ruby must be installed.
 |----------|-------------|---------|
 | `sensu_go_agent_user` | user of `sensu-agent` | `{{ __sensu_go_agent_user }}` |
 | `sensu_go_agent_group` | group of `sensu-agent` | `{{ __sensu_go_agent_group }}` |
+| `sensu_go_agent_extra_groups` | list of extra groups `sensu_go_agent_user` belongs to | `[]` |
 | `sensu_go_agent_home` | home directory of `sensu-agent` user | `/home/{{ sensu_go_agent_user }}` |
 | `sensu_go_agent_package` | package name of `sensu-agent` | `{{ __sensu_go_agent_package }}` |
 | `sensu_go_agent_extra_packages` | list of extra packages to install | `{{ __sensu_go_agent_extra_packages }}` |
