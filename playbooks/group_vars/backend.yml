@@ -181,6 +181,7 @@ sensu_go_backend_checks:
         critical:
           - process_tree
           - dmesg
+          - syslog
 
   - check:
       name: proxy_check_http
@@ -280,6 +281,9 @@ sensu_go_backend_hooks:
       name: dmesg
       command: 'sh -c "dmesg | tail"'
       timeout: 10
+  - hook:
+      name: syslog
+      command: 'sh -c "grep nginx /var/log/messages | tail -n 50"'
 
 sensu_go_backend_roles:
   - role:
