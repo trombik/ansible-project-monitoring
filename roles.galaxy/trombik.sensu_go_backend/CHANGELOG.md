@@ -1,3 +1,8 @@
+## Release 1.5.0
+
+* 2c14f73 imp: introduce sensu_go_backend_handler_sets
+* 2a1c0f9 bugfix: use other URL for the key
+
 ## Release 1.4.0
 
 * 4a3cd65 feature: introduce sensu_go_backend_extra_config_files

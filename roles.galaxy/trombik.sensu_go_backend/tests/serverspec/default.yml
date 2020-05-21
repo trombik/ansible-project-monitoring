@@ -28,6 +28,11 @@
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_mutators:
+      - mutator:
+          name: cat
+          command: cat
+
     sensu_go_backend_handler_sets:
       - handler_set:
           name: keepalive
