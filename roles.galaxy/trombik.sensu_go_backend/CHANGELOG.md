@@ -1,3 +1,8 @@
+## Release 1.6.0
+
+* 4efa4d2 feature: support mutator
+* 94f4b58 bugfix: place modules in order of dependencies
+
 ## Release 1.5.0
 
 * 2c14f73 imp: introduce sensu_go_backend_handler_sets
