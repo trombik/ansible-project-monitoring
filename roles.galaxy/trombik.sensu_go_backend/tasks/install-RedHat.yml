@@ -9,8 +9,6 @@
   yum:
     name: "{{ sensu_go_backend_package }}"
     state: present
-  notify:
-    - Configure initial admin account
 
 - name: Enable sensu_go_backend_service
   service:

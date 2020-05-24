@@ -11,10 +11,3 @@
   wait_for:
     host: "{{ sensu_go_backend_api_host }}"
     port: "{{ sensu_go_backend_api_port }}"
-
-- name: Configure initial admin account
-  command:
-    cmd: sensu-backend init
-  environment:
-    SENSU_BACKEND_CLUSTER_ADMIN_USERNAME: "{{ sensu_go_backend_admin_account }}"
-    SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD: "{{ sensu_go_backend_admin_password }}"

@@ -102,6 +102,27 @@
     name: "{{ sensu_go_backend_service }}"
     state: started
 
+- name: Check for sensu-backend init command
+  command:
+    cmd: sensu-backend init -h
+  register: init_command_test
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
+- name: Configure initial admin account
+  # stole from:
+  # https://github.com/sensu/sensu-go-ansible/blob/a89e6c151b4010851690fb90f50ac28c0c1716f9/roles/backend/tasks/start.yml#L17
+  command:
+    cmd: sensu-backend init
+  environment:
+    SENSU_BACKEND_CLUSTER_ADMIN_USERNAME: "{{ sensu_go_backend_admin_account }}"
+    SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD: "{{ sensu_go_backend_admin_password }}"
+  when: init_command_test.rc == 0
+  register: init_command
+  failed_when: init_command.rc not in (0, 3)  # 0 - OK, 3 - already initialized
+  changed_when: init_command.rc == 0
+
 - name: Include flush_handlers.yml
   # XXX workaround `[WARNING]: flush_handlers task does not support when
   # conditional`
