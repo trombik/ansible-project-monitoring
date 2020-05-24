@@ -1,0 +1,15 @@
+---
+
+# Create sensu user before running trombik.cfssl role
+# the role needs to give `sensu` user a permission on private key file, but the
+# user is not created yet. trombik.cfssl role is able to create the user, but
+# it needs private and public keys before the play.
+
+- name: Crreate sensu group
+  group:
+    name: sensu
+
+- name: Create sensu user
+  user:
+    name: sensu
+    group: sensu
