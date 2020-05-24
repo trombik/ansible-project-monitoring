@@ -46,6 +46,10 @@ sensu_go_backend_ruby_plugins:
 
 sensu_go_backend_admin_account: admin
 sensu_go_backend_admin_password: P@ssw0rd!
+project_tls_cert: "{{ cfssl_certs_dir }}/{{ hostname_fqdn }}.pem"
+project_tls_key: "{{ cfssl_certs_dir }}/{{ hostname_fqdn }}-key.pem"
+project_tls_ca_cert: "{{ cfssl_ca_root_dir }}/ca.pem"
+
 sensu_go_backend_config:
   state-dir: "{{ sensu_go_backend_state_dir }}"
   cache-dir: "{{ sensu_go_backend_cache_dir }}"
@@ -333,3 +337,59 @@ sensu_go_backend_role_bindings:
       groups: []
       users:
         - "{{ project_readonly_user }}"
+# __________________________________________cfssl
+cfssl_certs:
+  - name: agent.i.trombik.org.json
+    # Subject Alternative Name, or SAN in short
+    SAN: []
+    profile: agent
+    owner: sensu
+    json:
+      CN: agent1.i.trombik.org
+      hosts:
+        - ""
+      key:
+        algo: rsa
+        size: 2048
+  - name: nex2.i.trombik.org.json
+    SAN:
+      - 127.0.0.1
+      - localhost
+      - nex2
+      - 172.16.100.254
+    profile: backend
+    owner: sensu
+    json:
+      CN: nex2.i.trombik.org
+      hosts:
+        - ""
+      key:
+        algo: rsa
+        size: 2048
+
+cfssl_ca_csr_config:
+  CN: Root CA at i.trombik.org
+  key:
+    algo: rsa
+    size: 2048
+cfssl_ca_config:
+  signing:
+    default:
+      expiry: 17520h
+      usages:
+        - signing
+        - key encipherment
+        - client auth
+    profiles:
+      backend:
+        expiry: 4320h
+        usages:
+          - signing
+          - key encipherment
+          - server auth
+      agent:
+        expiry: 4320h
+        usages:
+          - signing
+          - key encipherment
+          - client auth
