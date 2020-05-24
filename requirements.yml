@@ -17,6 +17,7 @@ roles:
   - name: trombik.nginx
   - name: trombik.monit
   - name: trombik.sudo
+  - name: trombik.cfssl
 
 collections:
   - name: sensu.sensu_go
