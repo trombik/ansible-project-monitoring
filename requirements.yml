@@ -7,8 +7,6 @@ roles:
   - name: trombik.hosts
   - name: trombik.git
   - name: trombik.sensu_go_backend
-    src: https://github.com/trombik/ansible-role-sensu_go_backend.git
-    version: init_fix
   - name: trombik.sensu_go_agent
   - name: trombik.freebsd_pkg_repo
   - name: trombik.apt_repo
