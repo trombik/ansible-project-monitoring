@@ -1,21 +1,26 @@
 ---
 all:
   hosts:
-    nex1.i.trombik.org:
-      ansible_host: nex1.i.trombik.org
-      ansible_python_interpreter: /usr/local/bin/python3
-      vars:
-        ansible_python_interpreter: /usr/local/bin/python3
+    sensu1.i.trombik.org:
+      ansible_host: sensu1.i.trombik.org
   children:
-    www:
+    backend:
       hosts:
-        nex1.i.trombik.org:
-    prod-www:
+        sensu1.i.trombik.org:
+    target:
+      hosts:
+        sensu1.i.trombik.org:
+    virtualbox-backend:
       children:
-        www:
-    prod-credentials:
+        backend:
+    virtualbox-target:
       children:
-        www:
-    prod:
+        target:
+    virtualbox-credentials:
       children:
-        www:
+        backend:
+        target:
+    virtualbox:
+      children:
+        backend:
+        target:
