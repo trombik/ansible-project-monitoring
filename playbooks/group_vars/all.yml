@@ -54,7 +54,7 @@ freebsd_pkg_repo:
 apt_repo_keys_to_add:
   - https://packagecloud.io/sensu/stable/gpgkey
 apt_repo_to_add:
-  - deb https://packagecloud.io/sensu/stable/ubuntu/ bionic main
+  - deb https://packagecloud.io/sensu/stable/ubuntu/ {{ ansible_distribution_release }} main
 apt_repo_enable_apt_transport_https: True
 
 redhat_repo_extra_packages:
