@@ -1,3 +1,7 @@
+## Release 1.6.1
+
+* 1103e9a bugfix: fix unreliable sensu-backend init
+
 ## Release 1.6.0
 
 * 4efa4d2 feature: support mutator
