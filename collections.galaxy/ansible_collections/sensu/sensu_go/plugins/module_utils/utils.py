@@ -92,6 +92,14 @@ def dict_to_single_item_dicts(data):
     return [{k: v} for k, v in data.items()]
 
 
+def single_item_dicts_to_dict(data):
+    result = {}
+    for item in data:
+        (k, v), = item.items()
+        result[k] = v
+    return result
+
+
 def dict_to_key_value_strings(data):
     return ["{0}={1}".format(k, v) for k, v in data.items()]
 
@@ -111,3 +119,16 @@ def prepare_result_list(result):
     if isinstance(result, list):
         return result
     return [] if result is None else [result]
+
+
+def convert_v1_to_v2_response(response):
+    # dict(metadata=<meta>, spec=dict(a=1)) -> dict(metadata=<meta>, a=1)
+
+    if not response:
+        return response
+
+    if "metadata" not in response:
+        return response["spec"]
+
+    # Move metadata key into the spec.
+    return dict(response["spec"], metadata=response["metadata"])

@@ -19,3 +19,5 @@ roles:
 
 collections:
   - name: sensu.sensu_go
+    src: git+https://github.com/sensu/sensu-go-ansible.git,v1.5.0
+    type: git
