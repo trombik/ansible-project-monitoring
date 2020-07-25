@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "sensu",
   "name": "sensu_go",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "authors": [
    "Paul Arthur <paul.arthur@flowerysong.com> (@flowerysong)",
    "XLAB Steampunk <steampunk@xlab.si>"
@@ -26,7 +26,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "cb0e0d74cca82147460ba301accd0b9d50dcfef2aab990a2c7e4694151937eaa",
+  "chksum_sha256": "ccf70b5357d7292a580030f86356e91161c092dc5066274014cd5830bcea01f9",
   "format": 1
  },
  "format": 1
