@@ -21,7 +21,8 @@ os_sensu_go_agent_extra_packages:
   Debian:
     - libffi-dev
     - ruby-dev
-  RedHat:
+    - monitoring-plugins-basic
+  RedHat: []
   OpenBSD: []
 sensu_go_agent_extra_packages: "{{ os_sensu_go_agent_extra_packages[ansible_os_family] }}"
 
