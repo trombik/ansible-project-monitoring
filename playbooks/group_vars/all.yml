@@ -10,8 +10,8 @@ project_backend_url: "wss://{{ project_backend_address }}:8081"
 os_project_naigos_plugin_dir:
   FreeBSD: /usr/local/libexec/nagios
   OpenBSD: /usr/local/libexec/nagios
-  Debian: /usr/lib64/nagios/plugins
-  RedHat: /usr/lib64/nagios/plugins
+  Debian: /usr/lib/nagios/plugins
+  RedHat: FIXME
 
 os_project_sensu_plugin_dir:
   FreeBSD: "{{ sensu_go_agent_home }}/.gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}/bin"
