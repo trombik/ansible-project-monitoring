@@ -11,6 +11,11 @@ all:
       ansible_host: 172.16.100.101
       vagrant_box: trombik/ansible-freebsd-12.1-amd64
       ansible_python_interpreter: /usr/local/bin/python3
+    target2.i.trombik.org:
+      vagrant_priority: 20
+      ansible_host: 172.16.100.102
+      vagrant_box: trombik/ansible-ubuntu-18.04-amd64
+      ansible_python_interpreter: /usr/bin/python3
   children:
     backend:
       hosts:
@@ -18,6 +23,7 @@ all:
     target:
       hosts:
         target1.i.trombik.org:
+        target2.i.trombik.org:
     virtualbox-backend:
       children:
         backend:

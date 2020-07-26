@@ -1,0 +1,5 @@
+---
+
+users_default_group: "{{ __users_default_group }}"
+users_default_groups: "{{ __users_default_groups }}"
+users_default_shell: "{{ __users_default_shell }}"

@@ -2,11 +2,11 @@
 
 # __________________________________________________sudo
 sudo_sudoer: |
-  root ALL=(ALL) ALL
+  root ALL=(ALL) NOPASSWD: ALL
   #includedir {{ sudo_confd_dir }}
 
 project_sudo_configs:
-  - name: wheel
+  - name: 200_wheel
     content: |
       %wheel ALL=(ALL) ALL
       %sudo  ALL=(ALL) ALL
@@ -18,7 +18,9 @@ os_sensu_go_agent_extra_packages:
   FreeBSD:
     - sysutils/sensu-go-cli
     - net-mgmt/nagios-plugins
-  Debian: []
+  Debian:
+    - libffi-dev
+    - ruby-dev
   RedHat:
   OpenBSD: []
 sensu_go_agent_extra_packages: "{{ os_sensu_go_agent_extra_packages[ansible_os_family] }}"

@@ -3,7 +3,7 @@
 project_trombik_password: "$2b$08$jRKbjZhFw1GIjiz51qtGBumLydUNc606fv357XZE7hrS81M9GERpe"
 project_backend_address: 172.16.100.254
 project_sudo_configs_local:
-  - name: vagrant
+  - name: 100_vagrant
     content: |
       Defaults:vagrant !requiretty
       vagrant ALL=(ALL) NOPASSWD: ALL
