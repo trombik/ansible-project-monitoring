@@ -27,3 +27,4 @@
     - name: trombik.cfssl
     - name: trombik.sensu_go_backend
     - name: trombik.sensu_go_agent
+    - name: fetch_ca_cert

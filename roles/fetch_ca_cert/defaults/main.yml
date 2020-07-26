@@ -1,0 +1,4 @@
+---
+
+# XXX relative path from playbooks
+fetch_ca_cert_dest_dir: fetched_files/ca/

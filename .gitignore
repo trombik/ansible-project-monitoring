@@ -9,3 +9,4 @@
 /terraform.*
 .rspec_status
 node_modules/
+/playbooks/fetched_files/

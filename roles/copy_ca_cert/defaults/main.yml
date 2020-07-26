@@ -1,0 +1,6 @@
+---
+
+copy_ca_cert_ca_root_dir: "{{ __copy_ca_cert_ca_root_dir }}"
+
+# XXX relative path from playbooks
+copy_ca_cert_src_dir: fetched_files/ca
