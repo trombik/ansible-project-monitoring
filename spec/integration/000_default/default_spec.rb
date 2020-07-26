@@ -12,13 +12,16 @@ readonly_pass = credentials_yaml["project_readonly_pass"]
 
 Capybara.configure do |config|
   config.run_server = false
-  config.app_host = "http://172.16.100.254:3000"
+  config.app_host = "https://172.16.100.254:3000"
 end
 
 # see https://docs.travis-ci.com/user/chrome#capybara
 Capybara.register_driver :chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new(args: %w[no-sandbox headless disable-gpu])
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    acceptInsecureCerts: true
+  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, desired_capabilities: capabilities)
 end
 
 Capybara.default_driver = :chrome
@@ -47,6 +50,10 @@ when "virtualbox"
 
     def sign_up_with(account, password)
       visit "signin"
+      puts current_url
+      require "pry"
+      # XXX when debugging, uncomment below
+      # binding.pry
       fill_in "username", with: account
       fill_in "password", with: password
       click_button "Sign in"
