@@ -1,0 +1,9 @@
+---
+
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Copy ca.pem to remote
+  copy:
+    src: "{{ copy_ca_cert_src_dir}}/ca.pem"
+    dest: "{{ copy_ca_cert_ca_root_dir }}"

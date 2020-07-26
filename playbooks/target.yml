@@ -21,6 +21,7 @@
     - name: trombik.git
     - name: trombik.language_ruby
     - name: users
+    - name: copy_ca_cert
     - name: trombik.nginx
     - name: trombik.sensu_go_agent
     - name: trombik.monit

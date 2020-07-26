@@ -1,0 +1,7 @@
+---
+
+- name: Fetch ca.cert
+  fetch:
+    dest: "{{ fetch_ca_cert_dest_dir }}"
+    flat: yes
+    src: "{{ project_tls_ca_cert }}"
