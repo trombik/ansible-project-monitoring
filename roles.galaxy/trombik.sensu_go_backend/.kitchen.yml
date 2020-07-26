@@ -51,3 +51,15 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
+    excludes:
+      - freebsd-12.1-amd64
+      - ubuntu-18.04-amd64
+  - name: tls
+    provisioner:
+      name: ansible_playbook
+      playbook: tests/serverspec/tls.yml
+    verifier:
+      name: shell
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/tls_spec.rb
+    excludes:
+      - centos-7.4-x86_64

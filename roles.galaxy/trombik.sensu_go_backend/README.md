@@ -17,6 +17,19 @@ collections:
   - name: sensu.sensu_go
 ```
 
+The role requires `sensu.sensu_go` version 1.5.0, which is not yet released
+(as of 2020-07-25). Until then, use `git+https` in `src`.
+
+```yaml
+---
+# requirements.yml
+collections:
+  - name: sensu.sensu_go
+    src: git+https://github.com/sensu/sensu-go-ansible.git,v1.5.0
+    type: git
+```
+
+
 ```console
 > ansible-galaxy collection install -r requirements.yml -p collections
 ```
@@ -43,6 +56,7 @@ Ruby must be installed.
 | `sensu_go_backend_home` | home directory of `sensu-backend` | `/home/{{ sensu_go_backend_user }}` |
 | `sensu_go_backend_package` | package name of `sensu-backend` | `{{ __sensu_go_backend_package }}` |
 | `sensu_go_backend_extra_packages` | list of extra packages to install | `{{ __sensu_go_backend_extra_packages }}` |
+| `sensu_go_backend_extra_python_packages` | list of extra python packages to install | `{{ __sensu_go_backend_extra_python_packages }}` |
 | `sensu_go_backend_log_dir` | path to log directory | `/var/log/sensu` |
 | `sensu_go_backend_state_dir` | path to `state-dir` | `{{ __sensu_go_backend_state_dir }}` |
 | `sensu_go_backend_cache_dir` | path of `cache-dir` | `{{ __sensu_go_backend_cache_dir }}` |
@@ -81,6 +95,12 @@ Ruby must be installed.
 | `sensu_go_backend_config_dir` | path to `sensu/conf.d` | `{{ __sensu_go_backend_config_dir }}` |
 | `sensu_go_backend_config_fragments` | see below | `[]` |
 | `sensu_go_backend_extra_config_files` | see below | `[]` |
+| `sensu_go_backend_environment_var` | a dict of environment variables. see below | `{}` |
+| `sensu_go_backend_etcd_client_port` | the default port of `etcd-listen-client-urls`. the role does not use it. reference purpose only. | `2379` |
+| `sensu_go_backend_etcd_peer_port` | the default port of
+`etcd-initial-advertise-peer-urls` and `etcd-initial-cluster`. the role does not use it. reference purpose only | `2380` |
+| `sensu_go_backend_agent_port` | the default port of `backend-url`. the role
+does not use it. reference purpose only | `8081` |
 
 ## `sensu_go_backend_assets`
 
@@ -240,6 +260,19 @@ This variable is a list of dict.
 | `content` | content of the file | no |
 | `state` | state of the file, either `present` or `absent` | no |
 
+## `sensu_go_backend_environment_var`
+
+This variable is a dict of environment variables to set when interacting with
+the backend with `sense-go` `ansible` collection. The key is name of the
+variable, and the value is the value of the variable. You would like to set
+the following environment variables so that you do not have to set `auth`
+attribute every time you define `sensu-go` resources.
+
+- `SENSU_URL`
+- `SENSU_USER`
+- `SENSU_PASSWORD`
+- `SENSU_CA_PATH`
+
 ## `sensu_go_backend_flags`
 
 This variable is used to configure startup options for the service. What it
@@ -271,6 +304,7 @@ does depends on platform.
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
+| `__sensu_go_backend_extra_python_packages` | `["python-bcrypt"]` |
 
 ## FreeBSD
 
@@ -283,9 +317,10 @@ does depends on platform.
 | `__sensu_go_backend_state_dir` | `/var/db/sensu/sensu-backend` |
 | `__sensu_go_backend_cache_dir` | `/var/cache/sensu/sensu-backend` |
 | `__sensu_go_backend_service` | `sensu-backend` |
-| `__sensu_go_backend_conf_dir` | `/usr/local/etc` |
-| `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/sensu-backend.yml` |
+| `__sensu_go_backend_conf_dir` | `/usr/local/etc/sensu` |
+| `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/usr/local/etc/sensu/conf.d` |
+| `__sensu_go_backend_extra_python_packages` | `["security/py-bcrypt"]` |
 
 ## RedHat
 
@@ -301,6 +336,7 @@ does depends on platform.
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
+| `__sensu_go_backend_extra_python_packages` | `["py-bcrypt"]` |
 
 # Dependencies
 
@@ -311,6 +347,14 @@ does depends on platform.
 ```yaml
 ---
 - hosts: localhost
+  pre_tasks:
+    - name: Create sensu group before playing sensu_go_* roles
+      group:
+        name: sensu
+    - name: Create sensu user before playing sensu_go_* roles
+      user:
+        name: sensu
+        group: sensu
   roles:
     - role: trombik.freebsd_pkg_repo
       when: ansible_os_family == 'FreeBSD'
@@ -321,16 +365,19 @@ does depends on platform.
     - role: trombik.language_ruby
       when: ansible_os_family != 'RedHat'
 
+    - role: trombik.cfssl
     - role: trombik.sensu_go_agent
     - role: ansible-role-sensu_go_backend
   vars:
-
     # __________________________________________agent
     sensu_go_agent_config:
-      backend-url: ws://localhost:8081
+      backend-url: ws://127.0.0.1:8081
       cache-dir: "{{ sensu_go_agent_cache_dir }}"
       subscriptions:
         - system
+      # cert-file: "{{ project_cert_file }}"
+      # key-file: "{{ project_key_file }}"
+      trusted-ca-file: "{{ project_ca_cert_file }}"
 
     os_sensu_go_agent_flags:
       FreeBSD: ""
@@ -339,6 +386,11 @@ does depends on platform.
     sensu_go_agent_flags: "{{ os_sensu_go_agent_flags[ansible_os_family] }}"
 
     # __________________________________________backend
+    sensu_go_backend_mutators:
+      - mutator:
+          name: cat
+          command: cat
+
     sensu_go_backend_handler_sets:
       - handler_set:
           name: keepalive
@@ -378,6 +430,11 @@ does depends on platform.
       RedHat:
         - sensu-go-cli
         - sensu-plugins-ruby
+    project_cert_file: "{{ cfssl_certs_dir }}/localhost.pem"
+    project_key_file: "{{ cfssl_certs_dir }}/localhost-key.pem"
+    project_ca_cert_file: "{{ cfssl_ca_root_dir }}/ca.pem"
+    project_https_localhost: https://127.0.0.1
+    project_http_localhost: http://127.0.0.1
     sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
     sensu_go_backend_admin_account: admin
     sensu_go_backend_admin_password: P@ssw0rd!
@@ -386,9 +443,42 @@ does depends on platform.
       cache-dir: "{{ sensu_go_backend_cache_dir }}"
       log-level: debug
       agent-host: "[::]"
-      api-listen-address: "[::]:8080"
+
+      # XXX you cannot use HTTPS because the official ansible module does not
+      # support TLS. see https://github.com/sensu/sensu-go-ansible/issues/190
+      #
+      # XXX it looks like you can enable TLS in agent communication but
+      # disable in API. at least, on Ubuntu, it works that way. it does not on
+      # FreeBSD. there should be something different, but I cannot find out
+      # what. hope backend will log more details in the future.
+      api-url: "{{ project_http_localhost }}:8080"
+      # cert-file: "{{ project_cert_file }}"
+      # key-file: "{{ project_key_file }}"
+      # agent-auth-key-file: "{{ project_key_file }}"
+      # agent-auth-cert-file: "{{ project_cert_file }}"
+      # agent-auth-trusted-ca-file: "{{ project_ca_cert_file }}"
+      trusted-ca-file: "{{ project_ca_cert_file }}"
       dashboard-host: "[::]"
       dashboard-port: 3000
+      dashboard-cert-file: "{{ project_cert_file }}"
+      dashboard-key-file: "{{ project_key_file }}"
+      debug: True
+
+      etcd-cert-file: "{{ project_cert_file }}"
+      etcd-key-file: "{{ project_key_file }}"
+      etcd-trusted-ca-file: "{{ project_ca_cert_file }}"
+      etcd-peer-cert-file: "{{ project_cert_file }}"
+      etcd-peer-key-file: "{{ project_key_file }}"
+      etcd-peer-trusted-ca-file: "{{ project_ca_cert_file }}"
+      etcd-peer-client-cert-auth: False
+      etcd-listen-client-urls: "{{ project_https_localhost }}:2379"
+      etcd-listen-peer-urls: "{{ project_https_localhost }}:2380"
+      etcd-initial-advertise-peer-urls: "{{ project_https_localhost }}:2380"
+      etcd-initial-cluster: "default={{ project_https_localhost }}:2380"
+      etcd-client-cert-auth: False
+      etcd-client-urls: "{{ project_https_localhost }}:2379"
+      etcd-advertise-client-urls: "{{ project_https_localhost }}:2379"
+      insecure-skip-tls-verify: True
 
     os_sensu_go_backend_flags:
       FreeBSD: ""
@@ -550,6 +640,49 @@ does depends on platform.
           system:
             network:
               interfaces: null
+    # __________________________________________cfssl
+    cfssl_certs:
+      - name: localhost.json
+        # Subject Alternative Name, or SAN in short
+        SAN:
+          - 127.0.0.1
+        profile: backend
+        owner: sensu
+        json:
+          CN: localhost
+          hosts:
+            - ""
+          key:
+            algo: rsa
+            size: 2048
+    cfssl_ca_config:
+      signing:
+        default:
+          expiry: 17520h
+          usages:
+            - signing
+            - key encipherment
+            - client auth
+        profiles:
+          backend:
+            expiry: 4320h
+            usages:
+              - signing
+              - key encipherment
+              - server auth
+              - client auth
+          agent:
+            expiry: 4320h
+            usages:
+              - signing
+              - key encipherment
+              - client auth
+
+    cfssl_ca_csr_config:
+      CN: Sensu Test CA
+      key:
+        algo: rsa
+        size: 2048
     # __________________________________________package
     freebsd_pkg_repo:
 

@@ -4,6 +4,7 @@ sensu_go_backend_group: "{{ __sensu_go_backend_group }}"
 sensu_go_backend_home: "/home/{{ sensu_go_backend_user }}"
 sensu_go_backend_package: "{{ __sensu_go_backend_package }}"
 sensu_go_backend_extra_packages: "{{ __sensu_go_backend_extra_packages }}"
+sensu_go_backend_extra_python_packages: "{{ __sensu_go_backend_extra_python_packages }}"
 sensu_go_backend_log_dir: /var/log/sensu
 sensu_go_backend_state_dir: "{{ __sensu_go_backend_state_dir }}"
 sensu_go_backend_cache_dir: "{{ __sensu_go_backend_cache_dir }}"
@@ -42,5 +43,7 @@ sensu_go_backend_ruby_plugins: []
 sensu_go_backend_config_dir: "{{ __sensu_go_backend_config_dir }}"
 sensu_go_backend_config_fragments: []
 sensu_go_backend_extra_config_files: []
-
-sensu_go_backend_users_ignore_changed: no
+sensu_go_backend_environment_var: {}
+sensu_go_backend_etcd_client_port: 2379
+sensu_go_backend_etcd_peer_port: 2380
+sensu_go_backend_agent_port: 8081

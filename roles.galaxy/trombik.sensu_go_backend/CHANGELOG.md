@@ -1,3 +1,17 @@
+## Release 1.7.0
+
+* 6acc508 bugfix: lint
+* d3cb919 feature: fully support TLS
+* 9ea276d bugfix: update gems
+* e1f9404 imp: introduce sensu_go_backend_extra_python_packages
+* 29a191b bugfix: lint
+* d9f95a7 bugfix: udpate gems
+* 382c6f0 doc: update the example in README
+* d71601a bugfix: enable TLS in etcd communication
+* 3aa65d3 bugfix: document you cannot use TLS in modules
+* f338c5f bugfix: add tests for TLS
+* 87012c6 bugfix: use standard path to backend.yml
+
 ## Release 1.6.1
 
 * 1103e9a bugfix: fix unreliable sensu-backend init
