@@ -63,7 +63,7 @@ describe file "#{sensu_plugins_conf_dir}/handler-slack.json" do
   its(:content_as_json) { should include("slack" => include("bot_name" => "slack-plugin")) }
 end
 
-describe file "/usr/local/etc/ssl/certs/nex2.i.trombik.org-key.pem" do
+describe file "/usr/local/etc/ssl/certs/mon.i.trombik.org-key.pem" do
   it { should exist }
   it { should be_file }
   it { should be_owned_by "sensu" }

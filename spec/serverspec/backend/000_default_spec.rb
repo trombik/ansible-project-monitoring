@@ -2,7 +2,7 @@
 
 require_relative "../spec_helper"
 
-describe "nex2" do
+describe "mon.i.trombik.org" do
   it_behaves_like "a host with all basic tools installed"
 end
 
