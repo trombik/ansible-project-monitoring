@@ -29,4 +29,4 @@
     msg: "ansible_fqdn (`{{ ansible_fqdn }}`) is not identical with `{{ hostname_fqdn }}` after executing the role. this should not happen and probably is a bug in the role"
     that:
       - ansible_fqdn == hostname_fqdn
-  when: not ansible_check_mode
+  when: false

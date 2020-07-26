@@ -1,0 +1,7 @@
+---
+
+__users_default_group: users
+__users_default_groups:
+  - sudo
+  - dialout
+__users_default_shell: /usr/bin/zsh

@@ -1,0 +1,6 @@
+---
+
+__users_default_group: wheel
+__users_default_groups:
+  - dialer
+__users_default_shell: /usr/local/bin/zsh

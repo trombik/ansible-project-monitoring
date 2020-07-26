@@ -1,15 +1,17 @@
 ---
 
+- name: "Include {{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
+
 - name: Create trombik user
   user:
     comment: Tomoyuki Sakurai
     create_home: yes
-    group: wheel
-    groups:
-      - dialer
+    group: "{{ users_default_group }}"
+    groups: "{{ users_default_groups }}"
     name: trombik
     password: "{{ project_trombik_password }}"
-    shell: /usr/local/bin/zsh
+    shell: "{{ users_default_shell }}"
 
 - name: Create trombik's ssh key
   authorized_key:
