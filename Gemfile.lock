@@ -45,11 +45,13 @@ GEM
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
     childprocess (3.0.0)
+    coderay (1.1.3)
     diff-lcs (1.4.3)
     highline (2.0.3)
     io-console (0.5.6)
     irb (1.2.4)
       reline (>= 0.0.1)
+    method_source (1.0.0)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     multi_json (1.14.1)
@@ -62,6 +64,9 @@ GEM
     parallel (1.19.2)
     parser (2.7.1.4)
       ast (~> 2.4.1)
+    pry (0.13.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     public_suffix (4.0.5)
     rack (2.2.3)
     rack-test (1.1.0)
@@ -135,6 +140,7 @@ DEPENDENCIES
   capybara
   highline
   irb
+  pry
   rake
   retries (~> 0.0.5)
   rspec (~> 3.4.0)
