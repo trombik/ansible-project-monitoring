@@ -351,16 +351,16 @@ cfssl_certs:
       key:
         algo: rsa
         size: 2048
-  - name: nex2.i.trombik.org.json
+  - name: mon.i.trombik.org.json
     SAN:
       - 127.0.0.1
       - localhost
-      - nex2
+      - mon
       - 172.16.100.254
     profile: backend
     owner: sensu
     json:
-      CN: nex2.i.trombik.org
+      CN: mon.i.trombik.org
       hosts:
         - ""
       key:

@@ -68,7 +68,7 @@ To perform integration tests, run `test:integration:all` target.
 
 ### `virtualbox` environment
 
-#### `nex2.i.trombik.org`
+#### `mon.i.trombik.org`
 
 The core system of the monitoring system. It has the following services:
 
