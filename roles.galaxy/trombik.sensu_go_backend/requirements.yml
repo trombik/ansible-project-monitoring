@@ -1,9 +1,13 @@
 ---
 roles:
+  - name: trombik.hosts
   - name: trombik.freebsd_pkg_repo
   - name: trombik.apt_repo
   - name: trombik.redhat_repo
   - name: trombik.sensu_go_agent
   - name: trombik.language_ruby
+  - name: trombik.cfssl
 collections:
   - name: sensu.sensu_go
+    src: git+https://github.com/sensu/sensu-go-ansible.git,v1.5.0
+    type: git

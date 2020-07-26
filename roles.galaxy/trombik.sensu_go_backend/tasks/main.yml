@@ -136,6 +136,7 @@
     auth: "{{ item['namespace']['auth'] | default(omit) }}"
     name: "{{ item['namespace']['name'] }}"
     state: "{{ item['namespace']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_namespaces }}"
 
 - name: Configure sensu_go_backend_users
@@ -145,9 +146,8 @@
     name: "{{ item['user']['name'] }}"
     password: "{{ item['user']['password'] | default(omit) }}"
     state: "{{ item['user']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_users }}"
-  register: __sensu_go_backend_users_result
-  changed_when: __sensu_go_backend_users_result['changed'] and not sensu_go_backend_users_ignore_changed
 
 - name: Configure sensu_go_backend_roles
   sensu.sensu_go.role:
@@ -156,6 +156,7 @@
     namespace: "{{ item['role']['namespace'] | default(omit) }}"
     rules: "{{ item['role']['rules'] | default(omit) }}"
     state: "{{ item['role']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_roles }}"
 
 - name: Configure sensu_go_backend_cluster_roles
@@ -164,6 +165,7 @@
     name: "{{ item['cluster_role']['name'] }}"
     rules: "{{ item['cluster_role']['rules'] | default(omit) }}"
     state: "{{ item['cluster_role']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_cluster_roles }}"
 
 - name: Configure sensu_go_backend_cluster_role_bindings
@@ -174,6 +176,7 @@
     name: "{{ item['cluster_role_binding']['name'] }}"
     state: "{{ item['cluster_role_binding']['state'] | default(omit) }}"
     users: "{{ item['cluster_role_binding']['users'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_cluster_role_bindings }}"
 
 - name: Configure sensu_go_backend_role_bindings
@@ -186,6 +189,7 @@
     role: "{{ item['role_binding']['role'] | default(omit) }}"
     state: "{{ item['role_binding']['state'] | default(omit) }}"
     users: "{{ item['role_binding']['users'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_role_bindings }}"
 
 - name: Configure sensu_go_backend_assets
@@ -197,6 +201,7 @@
     name: "{{ item['asset']['name'] }}"
     namespace: "{{ item['asset']['namespace'] | default(omit) }}"
     state: "{{ item['asset']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_assets }}"
 
 - name: Configure sensu_go_backend_bonsai_assets
@@ -208,6 +213,7 @@
     namespace: "{{ item['bonsai_asset']['namespace'] | default(omit) }}"
     rename: "{{ item['bonsai_asset']['rename'] | default(omit) }}"
     version: "{{ item['bonsai_asset']['version'] }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_bonsai_assets }}"
 
 - name: Configure sensu_go_backend_mutators
@@ -222,6 +228,7 @@
     runtime_assets: "{{ item['mutator']['runtime_assets'] | default(omit) }}"
     state: "{{ item['mutator']['state'] | default(omit) }}"
     timeout: "{{ item['mutator']['timeout'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_mutators }}"
 
 - name: Configure sensu_go_backend_filters
@@ -235,6 +242,7 @@
     namespace: "{{ item['filter']['namespace'] | default(omit) }}"
     runtime_assets: "{{ item['filter']['runtime_assets'] | default(omit) }}"
     state: "{{ item['filter']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_filters }}"
 
 - name: Configure sensu_go_backend_pipe_handlers
@@ -250,6 +258,7 @@
     namespace: "{{ item['pipe_handler']['namespace'] | default(omit) }}"
     runtime_assets: "{{ item['pipe_handler']['runtime_assets'] | default(omit) }}"
     state: "{{ item['pipe_handler']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_pipe_handlers }}"
 
 - name: Configure sensu_go_backend_socket_handlers
@@ -266,6 +275,7 @@
     state: "{{ item['socket_handler']['state'] | default(omit) }}"
     timeout: "{{ item['socket_handler']['timeout'] | default(omit) }}"
     type: "{{ item['socket_handler']['type'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_socket_handlers }}"
 
 - name: Configure sensu_go_backend_handler_sets
@@ -277,6 +287,7 @@
     name: "{{ item['handler_set']['name'] }}"
     namespace: "{{ item['handler_set']['namespace'] | default(omit) }}"
     state: "{{ item['handler_set']['state'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_handler_sets }}"
 
 - name: Configure sensu_go_backend_hooks
@@ -291,6 +302,7 @@
     state: "{{ item['hook']['state'] | default(omit) }}"
     stdin: "{{ item['hook']['stdin'] | default(omit) }}"
     timeout: "{{ item['hook']['timeout'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_hooks }}"
 
 - name: Configure sensu_go_backend_entities
@@ -309,6 +321,7 @@
     subscriptions: "{{ item['entity']['subscriptions'] | default(omit) }}"
     system: "{{ item['entity']['system'] | default(omit) }}"
     user: "{{ item['entity']['user'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_entities }}"
 
 - name: Configure sensu_go_backend_checks
@@ -338,10 +351,12 @@
     subscriptions: "{{ item['check']['subscriptions'] | default(omit) }}"
     timeout: "{{ item['check']['timeout'] | default(omit) }}"
     ttl: "{{ item['check']['ttl'] | default(omit) }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_checks }}"
 
 - name: Configure sensu_go_backend_tessen
   sensu.sensu_go.tessen:
     auth: "{{ item['tessen']['auth'] | default(omit) }}"
     state: "{{ item['tessen']['state'] }}"
+  environment: "{{ sensu_go_backend_environment_var }}"
   with_items: "{{ sensu_go_backend_tessen }}"
