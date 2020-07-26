@@ -1,3 +1,9 @@
+## Release 1.1.4
+
+* 04d3064 bugfix: QA
+* f9bcc88 bugfix: update path to python
+* 58587a5 bugfix: update gems
+
 ## Release 1.1.3
 
 * 7c30b20 bugfix: s/python/python3/
