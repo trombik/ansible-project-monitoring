@@ -30,6 +30,7 @@ project_agent_extra_label:
 
 sensu_go_agent_config:
   backend-url: "{{ project_backend_url }}"
+  trusted-ca-file: ""
   cache-dir: "{{ sensu_go_agent_cache_dir }}"
   subscriptions:
     - system

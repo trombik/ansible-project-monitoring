@@ -7,7 +7,7 @@ admin_pass = credentials_yaml["sensu_go_backend_admin_password"]
 gems = %w[sensu-plugins-slack]
 sensu_user = "sensu"
 
-describe command("sensuctl configure -n --url http://127.0.0.1:8080 --username #{Shellwords.escape(admin_user)} --password #{Shellwords.escape(admin_pass)} --format yaml") do
+describe command("sensuctl configure -n --url https://127.0.0.1:8080 --username #{Shellwords.escape(admin_user)} --password #{Shellwords.escape(admin_pass)} --trusted-ca-file /usr/local/etc/ssl/ca.pem --format yaml") do
   before(:all) do
     Specinfra.backend.run_command("rm -rf /root/.config/sensu")
   end
