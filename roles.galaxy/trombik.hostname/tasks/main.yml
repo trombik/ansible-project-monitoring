@@ -1,32 +1,50 @@
 ---
 # tasks file for ansible-role-hostname
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- name: Assert hostname_fqdn is defined and NOT empty
+- name: Do warn when obsolete hostname_fqdn is defined
+  fail:
+    msg: "hostname_fqdn is deprecated. use hostname_short instead"
+  ignore_errors: yes
+  when:
+    - hostname_fqdn is defined
+    - hostname_fqdn != ""
+
+- name: Set hostname_short if hostname_fqdn is defined
+  set_fact:
+    hostname_short: "{{ hostname_fqdn.split('.') | first }}"
+    __hostname_fqdn_defined: yes
+  when:
+    - hostname_fqdn is defined
+    - hostname_fqdn != ""
+
+- name: Assert hostname_short is defined and NOT empty
   assert:
-    msg: hostname_fqdn must be defined and NOT empty
+    msg: hostname_short must be defined and NOT empty
     that:
-      - hostname_fqdn is defined
-      - hostname_fqdn != ""
+      - hostname_short is defined
+      - hostname_short != ""
 
 # XXX replace `include` with `include_task` after all platforms have recent
 # version of ansible
-- include: "configure-{{ ansible_os_family }}.yml"
+- name: "Include configure-{{ ansible_os_family }}.yml"
+  include: "configure-{{ ansible_os_family }}.yml"
 
 - name: Set hostname by hostname(1)
-  command: "hostname {% if ansible_os_family == 'Debian' %}{{ hostname_fqdn.split('.') | first }}{% else %}{{ hostname_fqdn }}{% endif %}"
+  command: "hostname {% if __hostname_fqdn_defined | default(False) %}{{ hostname_fqdn }}{% else %}{{ hostname_short }}{% endif %}"
   when:
-    - ansible_fqdn != hostname_fqdn
+    - ansible_hostname != hostname_short
 
 - name: Load facts again
   setup:
   when:
-    - ansible_fqdn != hostname_fqdn
+    - ansible_fqdn != hostname_short
 
-- name: Assert ansible_fqdn has been updated to hostname_fqdn
+- name: Assert ansible_hostname has been updated to hostname_short
   assert:
-    msg: "ansible_fqdn (`{{ ansible_fqdn }}`) is not identical with `{{ hostname_fqdn }}` after executing the role. this should not happen and probably is a bug in the role"
+    msg: "ansible_hostname, `{{ ansible_hostname }}`, is not identical with hostname_short, `{{ hostname_short }}`, after executing the role. this should not happen and probably is a bug in the role"
     that:
-      - ansible_fqdn == hostname_fqdn
-  when: false
+      - ansible_hostname == hostname_short
+  when: not ansible_check_mode

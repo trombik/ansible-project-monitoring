@@ -3,4 +3,4 @@
 - name: Update hostname in myname(5)
   copy:
     dest: /etc/myname
-    content: "{{ hostname_fqdn }}"
+    content: "{% if __hostname_fqdn_defined | default(False) %}{{ hostname_fqdn }}{% else %}{{ hostname_short }}{% endif %}"

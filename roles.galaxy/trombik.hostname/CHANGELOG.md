@@ -1,3 +1,8 @@
+## Release 1.0.6
+
+* 3daac1a bugfix: do NOT set domain at all
+* f7a3df2 bugfix: QA
+
 ## Release 1.0.5
 
 * a08a23a QA

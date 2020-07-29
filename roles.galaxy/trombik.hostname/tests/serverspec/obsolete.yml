@@ -5,7 +5,8 @@
     - ansible-role-hostname
   vars:
     fqdn: fqdn.example.org
-    hostname_short: "{{ fqdn.split('.') | first }}"
+    fqdn_short: "{{ fqdn.split('.') | first }}"
+    hostname_fqdn: "{{ fqdn }}"
     hosts_extra_localhosts:
       - "{{ fqdn }}"
-      - "{{ hostname_short }}"
+      - "{{ fqdn_short }}"

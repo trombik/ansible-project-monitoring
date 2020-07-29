@@ -56,7 +56,6 @@ Ruby must be installed.
 | `sensu_go_backend_home` | home directory of `sensu-backend` | `/home/{{ sensu_go_backend_user }}` |
 | `sensu_go_backend_package` | package name of `sensu-backend` | `{{ __sensu_go_backend_package }}` |
 | `sensu_go_backend_extra_packages` | list of extra packages to install | `{{ __sensu_go_backend_extra_packages }}` |
-| `sensu_go_backend_extra_python_packages` | list of extra python packages to install | `{{ __sensu_go_backend_extra_python_packages }}` |
 | `sensu_go_backend_log_dir` | path to log directory | `/var/log/sensu` |
 | `sensu_go_backend_state_dir` | path to `state-dir` | `{{ __sensu_go_backend_state_dir }}` |
 | `sensu_go_backend_cache_dir` | path of `cache-dir` | `{{ __sensu_go_backend_cache_dir }}` |
@@ -304,7 +303,6 @@ does depends on platform.
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
-| `__sensu_go_backend_extra_python_packages` | `["python-bcrypt"]` |
 
 ## FreeBSD
 
@@ -320,7 +318,6 @@ does depends on platform.
 | `__sensu_go_backend_conf_dir` | `/usr/local/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/usr/local/etc/sensu/conf.d` |
-| `__sensu_go_backend_extra_python_packages` | `["security/py-bcrypt"]` |
 
 ## RedHat
 
@@ -336,7 +333,6 @@ does depends on platform.
 | `__sensu_go_backend_conf_dir` | `/etc/sensu` |
 | `__sensu_go_backend_conf_file` | `{{ __sensu_go_backend_conf_dir }}/backend.yml` |
 | `__sensu_go_backend_config_dir` | `/etc/sensu/conf.d` |
-| `__sensu_go_backend_extra_python_packages` | `["py-bcrypt"]` |
 
 # Dependencies
 
@@ -356,6 +352,7 @@ does depends on platform.
         name: sensu
         group: sensu
   roles:
+    - role: trombik.hosts
     - role: trombik.freebsd_pkg_repo
       when: ansible_os_family == 'FreeBSD'
     - role: trombik.apt_repo
@@ -369,14 +366,13 @@ does depends on platform.
     - role: trombik.sensu_go_agent
     - role: ansible-role-sensu_go_backend
   vars:
+    hosts_enable_ipv6: false
     # __________________________________________agent
     sensu_go_agent_config:
-      backend-url: ws://127.0.0.1:8081
+      backend-url: wss://localhost:{{ sensu_go_backend_agent_port }}
       cache-dir: "{{ sensu_go_agent_cache_dir }}"
       subscriptions:
         - system
-      # cert-file: "{{ project_cert_file }}"
-      # key-file: "{{ project_key_file }}"
       trusted-ca-file: "{{ project_ca_cert_file }}"
 
     os_sensu_go_agent_flags:
@@ -433,11 +429,16 @@ does depends on platform.
     project_cert_file: "{{ cfssl_certs_dir }}/localhost.pem"
     project_key_file: "{{ cfssl_certs_dir }}/localhost-key.pem"
     project_ca_cert_file: "{{ cfssl_ca_root_dir }}/ca.pem"
-    project_https_localhost: https://127.0.0.1
-    project_http_localhost: http://127.0.0.1
+    project_https_localhost: "https://localhost"
     sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
     sensu_go_backend_admin_account: admin
     sensu_go_backend_admin_password: P@ssw0rd!
+    sensu_go_backend_environment_var:
+      SENSU_URL: "{{ project_https_localhost }}:{{ sensu_go_backend_api_port }}"
+      SENSU_USER: "{{ sensu_go_backend_admin_account }}"
+      SENSU_PASSWORD: "{{ sensu_go_backend_admin_password }}"
+      SENSU_CA_PATH: "{{ project_ca_cert_file }}"
+
     sensu_go_backend_config:
       state-dir: "{{ sensu_go_backend_state_dir }}"
       cache-dir: "{{ sensu_go_backend_cache_dir }}"
@@ -451,12 +452,9 @@ does depends on platform.
       # disable in API. at least, on Ubuntu, it works that way. it does not on
       # FreeBSD. there should be something different, but I cannot find out
       # what. hope backend will log more details in the future.
-      api-url: "{{ project_http_localhost }}:8080"
-      # cert-file: "{{ project_cert_file }}"
-      # key-file: "{{ project_key_file }}"
-      # agent-auth-key-file: "{{ project_key_file }}"
-      # agent-auth-cert-file: "{{ project_cert_file }}"
-      # agent-auth-trusted-ca-file: "{{ project_ca_cert_file }}"
+      api-url: "{{ project_https_localhost }}:8080"
+      cert-file: "{{ project_cert_file }}"
+      key-file: "{{ project_key_file }}"
       trusted-ca-file: "{{ project_ca_cert_file }}"
       dashboard-host: "[::]"
       dashboard-port: 3000
@@ -471,13 +469,13 @@ does depends on platform.
       etcd-peer-key-file: "{{ project_key_file }}"
       etcd-peer-trusted-ca-file: "{{ project_ca_cert_file }}"
       etcd-peer-client-cert-auth: False
-      etcd-listen-client-urls: "{{ project_https_localhost }}:2379"
-      etcd-listen-peer-urls: "{{ project_https_localhost }}:2380"
-      etcd-initial-advertise-peer-urls: "{{ project_https_localhost }}:2380"
-      etcd-initial-cluster: "default={{ project_https_localhost }}:2380"
+      etcd-listen-client-urls: "{{ project_https_localhost }}:{{ sensu_go_backend_etcd_client_port }}"
+      etcd-listen-peer-urls: "{{ project_https_localhost }}:{{ sensu_go_backend_etcd_peer_port }}"
+      etcd-initial-advertise-peer-urls: "{{ project_https_localhost }}:{{ sensu_go_backend_etcd_peer_port }}"
+      etcd-initial-cluster: "default={{ project_https_localhost }}:{{ sensu_go_backend_etcd_peer_port }}"
       etcd-client-cert-auth: False
-      etcd-client-urls: "{{ project_https_localhost }}:2379"
-      etcd-advertise-client-urls: "{{ project_https_localhost }}:2379"
+      etcd-client-urls: "{{ project_https_localhost }}:{{ sensu_go_backend_etcd_client_port }}"
+      etcd-advertise-client-urls: "{{ project_https_localhost }}:{{ sensu_go_backend_etcd_client_port }}"
       insecure-skip-tls-verify: True
 
     os_sensu_go_backend_flags:
@@ -544,8 +542,6 @@ does depends on platform.
                 - roles
                 - searches
                 - silenced
-    # XXX see https://github.com/sensu/sensu-go-ansible/issues/183
-    sensu_go_backend_users_ignore_changed: yes
     sensu_go_backend_users:
       - user:
           name: readonly-user
@@ -583,9 +579,6 @@ does depends on platform.
       - asset:
           name: sensu-go-uptime-check
           namespace: server
-          auth:
-            user: "{{ sensu_go_backend_admin_account }}"
-            password: "{{ sensu_go_backend_admin_password }}"
           builds:
             - sha512: 30d7ac78e314e83558891b6115b18d7f89d129f9d7e163af254e8f8e3a45f7b51efe648c45c827426b8be273974c3f63b934afb946a989cbdf11e5f576537b2b
               filters:
@@ -609,7 +602,7 @@ does depends on platform.
       - socket_handler:
           name: tcp_handler
           namespace: server
-          host: 127.0.0.1
+          host: localhost
           type: udp
           port: 53
     sensu_go_backend_tessen:
@@ -645,7 +638,7 @@ does depends on platform.
       - name: localhost.json
         # Subject Alternative Name, or SAN in short
         SAN:
-          - 127.0.0.1
+          - localhost
         profile: backend
         owner: sensu
         json:

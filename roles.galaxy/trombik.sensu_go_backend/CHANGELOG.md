@@ -1,3 +1,7 @@
+## Release 1.7.1
+
+* 22f3455 bugfix: remove sensu_go_backend_extra_python_packages
+
 ## Release 1.7.0
 
 * 6acc508 bugfix: lint

@@ -1,8 +1,8 @@
 ---
 
-- name: Install sensu_go_backend_extra_python_packages
+- name: Install required packages
   yum:
-    name: "{{ sensu_go_backend_extra_python_packages }}"
+    name: py-bcrypt
     state: present
 
 - name: Install sensu_go_backend_extra_packages

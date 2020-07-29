@@ -4,7 +4,6 @@ sensu_go_backend_group: "{{ __sensu_go_backend_group }}"
 sensu_go_backend_home: "/home/{{ sensu_go_backend_user }}"
 sensu_go_backend_package: "{{ __sensu_go_backend_package }}"
 sensu_go_backend_extra_packages: "{{ __sensu_go_backend_extra_packages }}"
-sensu_go_backend_extra_python_packages: "{{ __sensu_go_backend_extra_python_packages }}"
 sensu_go_backend_log_dir: /var/log/sensu
 sensu_go_backend_state_dir: "{{ __sensu_go_backend_state_dir }}"
 sensu_go_backend_cache_dir: "{{ __sensu_go_backend_cache_dir }}"
