@@ -1,3 +1,7 @@
+## Release 1.0.7
+
+* 0f7cfb3 bugfix: document hostname_fqdn, remove warning
+
 ## Release 1.0.6
 
 * 3daac1a bugfix: do NOT set domain at all
