@@ -8,9 +8,10 @@ Configure `hostname(1)`
 `hostname`, but the domain name does not belong to system configuration. It
 belongs to DNS. A system cannot _belong_ to a domain (exceptions: Active
 Directory). You cannot set FQDN with this role. Use DNS or `trombik.hosts` to
-make FQDN work on the host.
-
-## Backward compatibility
+make FQDN work on the host. However, BSDs allow users to set FQDN in
+`rc.conf(5)`. BSDs' behaviours are different from others when `hostname` is
+short one, and DNS record for the name is available. In that case, use
+`hostname_fqdn`.
 
 Previous versions of the role allow users to set FQDN in some OSes. The role
 reverts to old behaviour if `hostname_fqdn` is defined.
@@ -24,6 +25,7 @@ None
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `hostname_short` | string of `hostname` | `""` |
+| `hostname_fqdn` | string of `FQDN` | `""` |
 
 # Dependencies
 
