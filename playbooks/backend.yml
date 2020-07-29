@@ -14,8 +14,11 @@
     - name: trombik.hostname
     - name: trombik.localtime
     - name: trombik.hosts
+    - name: reload_facts
     - name: trombik.freebsd_pkg_repo
       when: ansible_os_family == 'FreeBSD'
+    - name: trombik.apt_repo
+      when: ansible_os_family == 'Debian'
     - name: trombik.sudo
     - name: trombik.vim
     - name: trombik.tmux

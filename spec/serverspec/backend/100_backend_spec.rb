@@ -6,8 +6,22 @@ admin_user = credentials_yaml["sensu_go_backend_admin_account"]
 admin_pass = credentials_yaml["sensu_go_backend_admin_password"]
 gems = %w[sensu-plugins-slack]
 sensu_user = "sensu"
+cert_dir = case os[:family]
+           when "freebsd"
+             "/usr/local/etc/ssl/certs"
+           else
+             "/etc/ssl/certs"
+           end
+cert = "#{cert_dir}/mon.i.trombik.org-key.pem"
+ca_cert_dir = case os[:family]
+              when "freebsd"
+                "/usr/local/etc/ssl"
+              else
+                "/etc/ssl"
+              end
+ca_cert = "#{ca_cert_dir}/ca.pem"
 
-describe command("sensuctl configure -n --url https://127.0.0.1:8080 --username #{Shellwords.escape(admin_user)} --password #{Shellwords.escape(admin_pass)} --trusted-ca-file /usr/local/etc/ssl/ca.pem --format yaml") do
+describe command("sensuctl configure -n --url https://127.0.0.1:8080 --username #{Shellwords.escape(admin_user)} --password #{Shellwords.escape(admin_pass)} --trusted-ca-file #{Shellwords.escape(ca_cert)} --format yaml") do
   before(:all) do
     Specinfra.backend.run_command("rm -rf /root/.config/sensu")
   end
@@ -63,7 +77,7 @@ describe file "#{sensu_plugins_conf_dir}/handler-slack.json" do
   its(:content_as_json) { should include("slack" => include("bot_name" => "slack-plugin")) }
 end
 
-describe file "/usr/local/etc/ssl/certs/mon.i.trombik.org-key.pem" do
+describe file cert do
   it { should exist }
   it { should be_file }
   it { should be_owned_by "sensu" }

@@ -1,6 +1,14 @@
 ---
 
-hostname_fqdn: "{{ inventory_hostname }}"
+os_hostname_short:
+  FreeBSD: ""
+  Debian: "{{ inventory_hostname.split('.') | first }}"
+hostname_short: "{{ os_hostname_short[ansible_os_family] }}"
+os_hostname_fqdn:
+  FreeBSD: "{{ inventory_hostname }}"
+  Debian: ""
+hostname_fqdn: "{{ os_hostname_fqdn[ansible_os_family] }}"
+
 localtime_zone:
   FreeBSD: Asia/Phnom_Penh
   Debian: Asia/Phnom_Penh
@@ -15,7 +23,7 @@ os_project_naigos_plugin_dir:
 
 os_project_sensu_plugin_dir:
   FreeBSD: "{{ sensu_go_agent_home }}/.gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}/bin"
-  Debian: "{{ sensu_go_agent_home }}/.gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}/bin"
+  Debian: "{{ sensu_go_agent_home }}/.gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}.0/bin"
 
 project_agent_label:
   nagios_plugin_dir: "{{ os_project_naigos_plugin_dir[ansible_os_family] }}"
