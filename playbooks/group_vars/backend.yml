@@ -6,7 +6,7 @@ sudo_sudoer: |
   #includedir {{ sudo_confd_dir }}
 
 project_sudo_configs:
-  - name: wheel
+  - name: 200_wheel
     content: |
       %wheel ALL=(ALL) ALL
       %sudo  ALL=(ALL) ALL
@@ -15,6 +15,17 @@ sudo_configs: "{{ project_sudo_configs + project_sudo_configs_local }}"
 
 # __________________________________________agent
 project_agent_extra_label: {}
+os_sensu_go_agent_extra_packages:
+  FreeBSD:
+    - sysutils/sensu-go-cli
+    - net-mgmt/nagios-plugins
+  Debian:
+    - sensu-go-cli
+    - libffi-dev
+    - ruby-dev
+  RedHat: []
+  OpenBSD: []
+sensu_go_agent_extra_packages: "{{ os_sensu_go_agent_extra_packages[ansible_os_family] }}"
 sensu_go_agent_config:
   backend-url: "{{ project_backend_url }}"
   cache-dir: "{{ sensu_go_agent_cache_dir }}"
@@ -40,6 +51,9 @@ os_sensu_go_backend_extra_packages:
     - textproc/p5-Text-Glob
   Debian:
     - sensu-go-cli
+    - monitoring-plugins-basic
+    - monitoring-plugins-standard
+    - nagios-plugins-contrib
   RedHat:
     - sensu-go-cli
 sensu_go_backend_extra_packages: "{{ os_sensu_go_backend_extra_packages[ansible_os_family] }}"
@@ -48,10 +62,21 @@ sensu_go_backend_ruby_plugins:
 
 sensu_go_backend_admin_account: admin
 sensu_go_backend_admin_password: P@ssw0rd!
-project_tls_cert: "{{ cfssl_certs_dir }}/{{ hostname_fqdn }}.pem"
-project_tls_key: "{{ cfssl_certs_dir }}/{{ hostname_fqdn }}-key.pem"
+project_tls_cert: "{{ cfssl_certs_dir }}/{{ ansible_fqdn }}.pem"
+project_tls_key: "{{ cfssl_certs_dir }}/{{ ansible_fqdn }}-key.pem"
 project_tls_ca_cert: "{{ cfssl_ca_root_dir }}/ca.pem"
 project_backend_listen_url: "https://{{ project_backend_address }}"
+
+os_project_ruby_plugin_dir:
+  FreeBSD: ".gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}/bin"
+  Debian: ".gem/ruby/{{ language_ruby_version['major'] }}.{{ language_ruby_version['minor'] }}.0/bin"
+project_ruby_plugin_dir: "{{ os_project_ruby_plugin_dir[ansible_os_family] }}"
+
+os_project_nagios_plugins_dir:
+  FreeBSD: /usr/local/libexec/nagios
+  Debian: /usr/lib/nagios/plugins
+project_nagios_plugins_dir: "{{ os_project_nagios_plugins_dir[ansible_os_family] }}"
+
 
 sensu_go_backend_environment_var:
   SENSU_URL: "{{ project_backend_listen_url }}:{{ sensu_go_backend_api_port }}"
@@ -194,7 +219,7 @@ sensu_go_backend_checks:
 
   - check:
       name: proxy_check_ssl_validity
-      command: "/usr/local/libexec/nagios/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
+      command: "{{ project_nagios_plugins_dir }}/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 600
       publish: true
@@ -230,7 +255,7 @@ sensu_go_backend_checks:
 
   - check:
       name: proxy_check_http
-      command: "/usr/local/libexec/nagios/check_http -H {% raw %}{{ .system.hostname }}{% endraw %}"
+      command: "{{ project_nagios_plugins_dir }}/check_http -H {% raw %}{{ .system.hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 60
       publish: true
@@ -246,7 +271,7 @@ sensu_go_backend_checks:
 
   - check:
       name: proxy_check_dig
-      command: "/usr/local/libexec/nagios/check_dig -H {% raw %}{{ .labels.target_host }}{% endraw %} --query_address={% raw %}{{ .labels.query_address }}{% endraw %}"
+      command: "{{ project_nagios_plugins_dir }}/check_dig -H {% raw %}{{ .labels.target_host }}{% endraw %} --query_address={% raw %}{{ .labels.query_address }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 60
       publish: true
@@ -312,7 +337,7 @@ sensu_go_backend_handler_sets:
 sensu_go_backend_pipe_handlers:
   - pipe_handler:
       name: slack
-      command: "/home/sensu/.gem/ruby/2.6/bin/handler-slack.rb --json slack --map-go-event-into-ruby"
+      command: "/home/sensu/{{ project_ruby_plugin_dir }}/handler-slack.rb --json slack --map-go-event-into-ruby"
       filters:
         - is_incident
         - not_silenced

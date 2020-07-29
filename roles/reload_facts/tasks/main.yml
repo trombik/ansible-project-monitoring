@@ -1,0 +1,8 @@
+---
+
+- name: Reload facts module to get latest information of ansible facts
+  # XXX this hack is needed because, at the first ansible play, the hostname
+  # and the fqdn is not configured. trombik.hostname configures so that
+  # ansible_fqdn returns a proper FQDN. however, trombik.sensu_go_backend
+  # still uses old facts.
+  setup:
