@@ -87,6 +87,9 @@ Vagrant.configure("2") do |config|
         c.vm.network "private_network", ip: inventory["all"]["hosts"][hostname]["ansible_host"]
         c.vm.hostname = inventory["all"]["hosts"][hostname]["project_fqdn"]
         c.vm.box = inventory["all"]["hosts"][hostname].key?("vagrant_box") ? inventory["all"]["hosts"][hostname]["vagrant_box"] : default_box
+        # XXX disable synced_folder. synced_folder is not portable.
+        # XXX also, it affects disk check result in sensu-go
+        c.vm.synced_folder ".", "/vagrant", disabled: true
         if inventory["all"]["hosts"][hostname].key?("vagrant_extra_disks")
           inventory["all"]["hosts"][hostname]["vagrant_extra_disks"].each_with_index do |disk, index|
             c.vm.provider "virtualbox" do |virtualbox|
