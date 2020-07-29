@@ -1,8 +1,9 @@
 ---
 
-- name: Install sensu_go_backend_extra_python_packages
+- name: Install required packages
   apt:
-    name: "{{ sensu_go_backend_extra_python_packages }}"
+    name:
+      - python3-bcrypt
     state: present
 
 - name: Install sensu_go_backend_extra_packages

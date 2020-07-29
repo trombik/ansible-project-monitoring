@@ -20,7 +20,7 @@ when "redhat"
     it { should be_mode 644 }
     it { should be_owned_by default_user }
     it { should be_grouped_into default_group }
-    its(:content) { should match(/^HOSTNAME="#{Regexp.escape(short_name)}"$/) }
+    its(:content) { should match(/^HOSTNAME="#{Regexp.escape(fqdn)}"$/) }
   end
 when "freebsd"
   describe file("/etc/rc.conf") do
@@ -29,7 +29,7 @@ when "freebsd"
     it { should be_mode 644 }
     it { should be_owned_by default_user }
     it { should be_grouped_into default_group }
-    its(:content) { should match(/^hostname="#{Regexp.escape(short_name)}"$/) }
+    its(:content) { should match(/^hostname="#{Regexp.escape(fqdn)}"$/) }
   end
 when "openbsd"
   describe file("/etc/myname") do
@@ -38,7 +38,7 @@ when "openbsd"
     it { should be_mode 644 }
     it { should be_owned_by default_user }
     it { should be_grouped_into default_group }
-    its(:content) { should match(/^#{Regexp.escape(short_name)}$/) }
+    its(:content) { should match(/^#{Regexp.escape(fqdn)}$/) }
   end
 when "ubuntu"
   describe file("/etc/hostname") do
@@ -52,19 +52,42 @@ when "ubuntu"
 end
 
 case os[:family]
-when "freebsd", "openbsd"
-  # XXX BSDs allows users to set FQDN. but `hostname(1)` does not lookup
-  # `/etc/hosts` when `hostname` is short. in this case, even if FQDN is in
-  # `hosts(5)`, hostname does not return FQDN.
+when "freebsd"
+  describe command("hostname -f") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq "" }
+    its(:stdout) { should match(/^#{Regexp.escape(fqdn)}$/) }
+  end
   describe command("hostname -s") do
     its(:exit_status) { should eq 0 }
     its(:stderr) { should eq "" }
     its(:stdout) { should match(/^#{Regexp.escape(short_name)}$/) }
   end
-when "redhat", "ubuntu"
-  # XXX Linux distributions does not allow users (officially) to set FQDN by
-  # `hostname(1)`. `hostname(1)` looks up `hosts(5)`. it the FQDN is in
-  # `hosts(5)`, `hostname(1)` returns FQDN.
+when "openbsd"
+  describe command("hostname") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq "" }
+    its(:stdout) { should match(/^#{Regexp.escape(fqdn)}$/) }
+  end
+
+  describe command("hostname -s") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq "" }
+    its(:stdout) { should match(/^#{Regexp.escape(short_name)}$/) }
+  end
+when "redhat"
+  describe command("hostname") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq "" }
+    its(:stdout) { should match(/^#{Regexp.escape(fqdn)}$/) }
+  end
+
+  describe command("hostname --short") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq "" }
+    its(:stdout) { should match(/^#{Regexp.escape(short_name)}$/) }
+  end
+when "ubuntu"
   describe command("hostname --fqdn") do
     its(:exit_status) { should eq 0 }
     its(:stderr) { should eq "" }
@@ -76,12 +99,6 @@ when "redhat", "ubuntu"
     its(:stderr) { should eq "" }
     its(:stdout) { should match(/^#{Regexp.escape(short_name)}$/) }
   end
-end
-
-describe command("ping -c 1 -q #{fqdn}") do
-  its(:exit_status) { should eq 0 }
-  its(:stderr) { should eq "" }
-  its(:stdout) { should match(/#{Regexp.escape("127.0.0.1")}/) }
 end
 
 describe command("ansible -m setup localhost") do

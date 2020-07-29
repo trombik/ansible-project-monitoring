@@ -2,13 +2,18 @@
 
 Configure `hostname(1)`
 
-## Notes for Ubuntu users
+## Notes for all users
 
-Ubuntu does not manage DNS domain name of the host. It is up to the users to
-set up one. Note that it is officially stated that setting `/etc/hostname`,
-which the role modifies, to FQDN is not the Right Thing. The role sets the
-short form of `hostname_fqdn` in `/etc/hostname`, and silently discards the
-rest of `hostname_fqdn`.
+`hostname` is NOT a FQDN. Some OSes allows to set domain name of the
+`hostname`, but the domain name does not belong to system configuration. It
+belongs to DNS. A system cannot _belong_ to a domain (exceptions: Active
+Directory). You cannot set FQDN with this role. Use DNS or `trombik.hosts` to
+make FQDN work on the host.
+
+## Backward compatibility
+
+Previous versions of the role allow users to set FQDN in some OSes. The role
+reverts to old behaviour if `hostname_fqdn` is defined.
 
 # Requirements
 
@@ -18,7 +23,7 @@ None
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `hostname_fqdn` | string of FQDN | `""` |
+| `hostname_short` | string of `hostname` | `""` |
 
 # Dependencies
 
@@ -27,17 +32,17 @@ None
 # Example Playbook
 
 ```yaml
+---
 - hosts: localhost
   roles:
     - trombik.hosts
     - ansible-role-hostname
   vars:
     fqdn: fqdn.example.org
-    fqdn_short: "{{ fqdn.split('.') | first }}"
-    hostname_fqdn: "{{ fqdn }}"
+    hostname_short: "{{ fqdn.split('.') | first }}"
     hosts_extra_localhosts:
       - "{{ fqdn }}"
-      - "{{ fqdn_short }}"
+      - "{{ hostname_short }}"
 ```
 
 # License

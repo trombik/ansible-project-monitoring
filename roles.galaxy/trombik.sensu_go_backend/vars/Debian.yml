@@ -9,5 +9,3 @@ __sensu_go_backend_service: sensu-backend
 __sensu_go_backend_conf_dir: /etc/sensu
 __sensu_go_backend_conf_file: "{{ __sensu_go_backend_conf_dir }}/backend.yml"
 __sensu_go_backend_config_dir: /etc/sensu/conf.d
-__sensu_go_backend_extra_python_packages:
-  - python-bcrypt

@@ -3,4 +3,4 @@
 - name: Update hostname in /etc/hostname
   copy:
     dest: /etc/hostname
-    content: "{{ hostname_fqdn.split('.') | first }}"
+    content: "{% if __hostname_fqdn_defined | default(False) %}{{ hostname_fqdn.split('.') | first }}{% else %}{{ hostname_short }}{% endif %}"
