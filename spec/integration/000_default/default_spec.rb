@@ -33,7 +33,7 @@ when "virtualbox"
     scenario "with vaild credential of admin user" do
       sign_up_with admin_user, admin_pass
 
-      expect(page).to have_content("local-cluster")
+      expect(page).to have_content("local-cluster", wait: 10)
     end
 
     scenario "with vaild credential of readonly user" do
