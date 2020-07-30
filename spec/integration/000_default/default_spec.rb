@@ -33,13 +33,13 @@ when "virtualbox"
     scenario "with vaild credential of admin user" do
       sign_up_with admin_user, admin_pass
 
-      expect(page).to have_content("Last executed")
+      expect(page).to have_content("local-cluster")
     end
 
     scenario "with vaild credential of readonly user" do
       sign_up_with readonly_user, readonly_pass
 
-      expect(page).to have_content("Last executed")
+      expect(page).to have_content("local-cluster")
     end
 
     scenario "with invalid credential" do
