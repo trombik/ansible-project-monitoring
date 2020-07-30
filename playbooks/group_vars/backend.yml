@@ -44,11 +44,7 @@ os_sensu_go_backend_extra_packages:
     - sysutils/sensu-go-cli
     - sysutils/rubygem-sensu-plugin
     - net-mgmt/nagios-plugins
-    # for nagios/check_ssl_validity
-    - security/p5-Crypt-X509
-    - devel/p5-TimeDate
-    - www/p5-libwww
-    - textproc/p5-Text-Glob
+    - net-mgmt/check_ssl_cert
   Debian:
     - sensu-go-cli
     - monitoring-plugins-basic
@@ -124,7 +120,7 @@ sensu_go_backend_entities:
       entity_class: proxy
       labels:
         cert_hostname: twitter.com
-        proxy_type: ssl_validity
+        proxy_type: ssl_cert
   - entity:
       name: 8.8.8.8
       entity_class: proxy
@@ -218,8 +214,8 @@ sensu_go_backend_checks:
         - slack
 
   - check:
-      name: proxy_check_ssl_validity
-      command: "{{ project_nagios_plugins_dir }}/check_ssl_validity -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
+      name: proxy_check_ssl_cert
+      command: "{{ project_nagios_plugins_dir }}/check_ssl_cert -H {% raw %}{{ .labels.cert_hostname }}{% endraw %}"
       output_metric_format: nagios_perfdata
       interval: 600
       publish: true
@@ -228,7 +224,7 @@ sensu_go_backend_checks:
       proxy_requests:
         entity_attributes:
           - "entity.entity_class == 'proxy'"
-          - "entity.labels.proxy_type == 'ssl_validity'"
+          - "entity.labels.proxy_type == 'ssl_cert'"
       state: present
       handlers:
         - slack
