@@ -14,7 +14,7 @@ class TestEnvironment
   end
 
   def vagrant(args)
-    Bundler.with_clean_env do
+    Bundler.with_original_env do
       ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = ".ansible_vault_key_dummy"
       exec_and_abort_if_fail "vagrant #{args}"
     end
