@@ -13,5 +13,5 @@ ignore: |
   node_modules
   roles.galaxy
   collections.galaxy
-  playbooks/group_vars/prod.yml
   ruby
+  playbooks/group_vars/prod-credentials.yml
