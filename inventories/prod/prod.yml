@@ -7,20 +7,12 @@ all:
     backend:
       hosts:
         sensu1.i.trombik.org:
-    target:
-      hosts:
-        sensu1.i.trombik.org:
-    virtualbox-backend:
+    prod-backend:
       children:
         backend:
-    virtualbox-target:
-      children:
-        target:
-    virtualbox-credentials:
+    prod-credentials:
       children:
         backend:
-        target:
-    virtualbox:
+    prod:
       children:
         backend:
-        target:
