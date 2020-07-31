@@ -13,8 +13,8 @@ class TestEnvironment
   def prepare; end
 
   def provision
-    sh "ansible-playbook -i #{Shellwords.escape(inventory_path)} " \
-      "--ask-become-pass" \
+    Rake.sh "ansible-playbook -i #{Shellwords.escape(inventory_path)} " \
+      "--ask-become-pass " \
       "--user #{Shellwords.escape(user)} playbooks/site.yml"
   end
 
