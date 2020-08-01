@@ -1,0 +1,21 @@
+---
+project_backend_listen_url: "https://{{ ansible_host }}"
+project_backend_etcd_listen_url: "https://{{ project_backend_address }}"
+project_cfssl_certs:
+  - name: sensu1.i.trombik.org.json
+    SAN:
+      - 127.0.0.1
+      - localhost
+      - sensu1
+      # XXX because etcd does not use DNS name, you need to list IP addresses
+      # here
+      - "{{ ansible_default_ipv4['address'] }}"
+    profile: backend
+    owner: sensu
+    json:
+      CN: sensu1.i.trombik.org
+      hosts:
+        - ""
+      key:
+        algo: rsa
+        size: 2048

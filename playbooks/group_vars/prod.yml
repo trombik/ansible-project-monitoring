@@ -1,5 +1,6 @@
 ---
-project_backend_address: sensu1.i.trombik.org
+project_backend_address: 192.168.99.241
+project_backend_url: "wss://sensu1.i.trombik.org:8081"
 project_sudo_configs_local:
   - name: 100_root
     content: |
@@ -11,3 +12,6 @@ project_sudo_configs_local:
     state: absent
     content: ""
 hosts_extra_localhosts: []
+# XXX do NOT use ansible_fqdn here. ansible_fqdn requires PTR records
+project_tls_cert: "{{ cfssl_certs_dir }}/{{ ansible_host }}.pem"
+project_tls_key: "{{ cfssl_certs_dir }}/{{ ansible_host }}-key.pem"

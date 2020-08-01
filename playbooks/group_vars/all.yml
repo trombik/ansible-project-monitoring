@@ -12,7 +12,6 @@ hostname_fqdn: "{{ os_hostname_fqdn[ansible_os_family] }}"
 localtime_zone:
   FreeBSD: Asia/Phnom_Penh
   Debian: Asia/Phnom_Penh
-project_backend_url: "wss://{{ project_backend_address }}:8081"
 
 # __________________________________________agent
 os_project_naigos_plugin_dir:

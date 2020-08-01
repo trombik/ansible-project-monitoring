@@ -1,5 +1,6 @@
 ---
 project_backend_address: 172.16.100.254
+project_backend_url: "wss://{{ project_backend_address }}:8081"
 project_sudo_configs_local:
   - name: 100_root
     content: |
@@ -17,3 +18,5 @@ project_sudo_configs_local:
 hosts_extra_localhosts:
   - "{{ inventory_hostname }}"
   - "{{ inventory_hostname.split('.') | first }}"
+project_tls_cert: "{{ cfssl_certs_dir }}/{{ ansible_fqdn }}.pem"
+project_tls_key: "{{ cfssl_certs_dir }}/{{ ansible_fqdn }}-key.pem"
