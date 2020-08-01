@@ -4,6 +4,8 @@ require_relative "../spec_helper"
 
 admin_user = credentials_yaml["sensu_go_backend_admin_account"]
 admin_pass = credentials_yaml["sensu_go_backend_admin_password"]
+guest_user = credentials_yaml["project_readonly_user"]
+
 gems = %w[sensu-plugins-slack]
 sensu_user = "sensu"
 cert_dir = case os[:family]
@@ -33,7 +35,7 @@ end
 describe command "sensuctl user list --format json" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
-  its(:stdout_as_json) { should include(include("username" => "readonly")) }
+  its(:stdout_as_json) { should include(include("username" => guest_user)) }
 end
 
 describe command "sensuctl check list --format json" do
