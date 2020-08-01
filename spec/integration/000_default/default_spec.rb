@@ -12,7 +12,12 @@ readonly_pass = credentials_yaml["project_readonly_pass"]
 
 Capybara.configure do |config|
   config.run_server = false
-  config.app_host = "https://172.16.100.254:3000"
+  case test_environment
+  when "virtualbox"
+    config.app_host = "https://172.16.100.254:3000"
+  when "prod"
+    config.app_host = "https://sensu1.i.trombik.org:3000"
+  end
 end
 
 # see https://docs.travis-ci.com/user/chrome#capybara
@@ -27,36 +32,33 @@ end
 Capybara.default_driver = :chrome
 Capybara.javascript_driver = :chrome
 
-case test_environment
-when "virtualbox"
-  feature "Login to sensu-backend" do
-    scenario "with vaild credential of admin user" do
-      sign_up_with admin_user, admin_pass
+feature "Login to sensu-backend" do
+  scenario "with vaild credential of admin user" do
+    sign_up_with admin_user, admin_pass
 
-      expect(page).to have_content("local-cluster", wait: 10)
-    end
+    expect(page).to have_content("local-cluster", wait: 10)
+  end
 
-    scenario "with vaild credential of readonly user" do
-      sign_up_with readonly_user, readonly_pass
+  scenario "with vaild credential of readonly user" do
+    sign_up_with readonly_user, readonly_pass
 
-      expect(page).to have_content("local-cluster")
-    end
+    expect(page).to have_content("local-cluster")
+  end
 
-    scenario "with invalid credential" do
-      sign_up_with "foo", "bar"
+  scenario "with invalid credential" do
+    sign_up_with "foo", "bar"
 
-      expect(page).to have_content("Sign in")
-    end
+    expect(page).to have_content("Sign in")
+  end
 
-    def sign_up_with(account, password)
-      visit "signin"
-      puts current_url
-      require "pry"
-      # XXX when debugging, uncomment below
-      # binding.pry
-      fill_in "username", with: account
-      fill_in "password", with: password
-      click_button "Sign in"
-    end
+  def sign_up_with(account, password)
+    visit "signin"
+    puts current_url
+    require "pry"
+    # XXX when debugging, uncomment below
+    # binding.pry
+    fill_in "username", with: account
+    fill_in "password", with: password
+    click_button "Sign in"
   end
 end
