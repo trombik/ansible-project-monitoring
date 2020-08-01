@@ -1,0 +1,33 @@
+---
+project_backend_listen_url: "https://{{ project_backend_address }}"
+# XXX etcd accepts URL as value, but it does not accept DNS name, onlu IP
+# address.
+project_backend_etcd_listen_url: "https://{{ project_backend_address }}"
+project_cfssl_certs:
+  - name: agent.i.trombik.org.json
+    # Subject Alternative Name, or SAN in short
+    SAN: []
+    profile: agent
+    owner: sensu
+    json:
+      CN: agent1.i.trombik.org
+      hosts:
+        - ""
+      key:
+        algo: rsa
+        size: 2048
+  - name: mon.i.trombik.org.json
+    SAN:
+      - 127.0.0.1
+      - localhost
+      - mon
+      - 172.16.100.254
+    profile: backend
+    owner: sensu
+    json:
+      CN: mon.i.trombik.org
+      hosts:
+        - ""
+      key:
+        algo: rsa
+        size: 2048
