@@ -14,6 +14,7 @@ project_sudo_configs:
 sudo_configs: "{{ project_sudo_configs + project_sudo_configs_local }}"
 
 # __________________________________________agent
+project_dash_board_port: 3000
 project_agent_extra_label: {}
 os_sensu_go_agent_extra_packages:
   FreeBSD:
@@ -84,7 +85,7 @@ sensu_go_backend_config:
   agent-host: "[::]"
   api-listen-address: "[::]:8080"
   dashboard-host: "[::]"
-  dashboard-port: 3000
+  dashboard-port: "{{ project_dash_board_port }}"
 
   cert-file: "{{ project_tls_cert }}"
   key-file: "{{ project_tls_key }}"
@@ -319,7 +320,7 @@ sensu_go_backend_extra_config_files:
       ---
       Output: <%= @event["check"]["output"] %>
       Alert-Time: <%= Time.at(@event["check"]["issued"])  %>
-      URL: http://172.16.100.254:3000/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>
+      URL: '{{ project_backend_listen_url }}{% if project_dash_board_port != 80 and project_dash_board_port != 443 %}:{{ project_dash_board_port }}{% endif %}/c/~/n/<%= @event["check"]["metadata"]["namespace"] %>/events/<%= @event["entity"]["metadata"]["name"] %>/<%= @event["check"]["metadata"]["name"] %>'
 
 sensu_go_backend_handler_sets:
   - handler_set:
