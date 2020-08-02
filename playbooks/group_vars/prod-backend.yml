@@ -11,6 +11,15 @@ project_cfssl_certs:
       # XXX because etcd does not use DNS name, you need to list IP addresses
       # here
       - "{{ ansible_default_ipv4['address'] }}"
+      # XXX golang does not check CN if SAN exists. you need FQDN in SAN
+      #
+      # RFC6125 says:
+      # As noted, a client MUST NOT seek a match for a reference identifier
+      # of CN-ID if the presented identifiers include a DNS-ID, SRV-ID,
+      # URI-ID, or any application-specific identifier types supported by the
+      # client.
+      # https://tools.ietf.org/html/rfc6125#section-6.4.4
+      - "{{ ansible_host }}"
     profile: backend
     owner: sensu
     json:
