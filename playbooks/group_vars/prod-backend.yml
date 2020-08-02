@@ -1,4 +1,5 @@
 ---
+project_sensu_go_backend_config_log_level: info
 project_backend_listen_url: "https://{{ ansible_host }}"
 project_backend_etcd_listen_url: "https://{{ project_backend_address }}"
 project_cfssl_certs:
