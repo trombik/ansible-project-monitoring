@@ -1,4 +1,5 @@
 ---
+project_sensu_go_backend_config_log_level: info
 project_backend_listen_url: "https://{{ project_backend_address }}"
 # XXX etcd accepts URL as value, but it does not accept DNS name, onlu IP
 # address.

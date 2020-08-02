@@ -81,7 +81,7 @@ sensu_go_backend_environment_var:
 sensu_go_backend_config:
   state-dir: "{{ sensu_go_backend_state_dir }}"
   cache-dir: "{{ sensu_go_backend_cache_dir }}"
-  log-level: debug
+  log-level: "{{ project_sensu_go_backend_config_log_level }}"
   agent-host: "[::]"
   api-listen-address: "[::]:8080"
   dashboard-host: "[::]"
