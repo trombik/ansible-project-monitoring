@@ -29,3 +29,16 @@ project_cfssl_certs:
       key:
         algo: rsa
         size: 2048
+  - name: mqtt.i.trombik.org.json
+    profile: backend
+    owner: root
+    SAN:
+      - mqtt.i.trombik.org
+    json:
+      CN: mqtt.i.trombik.org
+      names:
+        - C: KH
+          O: MKRS Siem Reap
+      key:
+        algo: rsa
+        size: 2048
